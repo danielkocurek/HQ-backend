@@ -1,34 +1,29 @@
-# src/models/ProfileViewHistoryModel.py
-from __future__ import with_statement
-from msilib import sequence
-from turtle import title
+# src/models/AppliedJobModel.py
 from marshmallow import fields, Schema
 import datetime
 
 from . import db, bcrypt
 
-class ProfileViewHistoryModel(db.Model):
+class AppliedJobModel(db.Model):
   """
-  ProfileViewHistory Model
+  AppliedJob Model
   """
   # table name
-  __tablename__ = 'profileviewhistories'
+  __tablename__ = 'appliedjobs'
 
   id = db.Column(db.Integer, primary_key=True)
-  who = db.Column(db.Integer, nullable=False)
-  when = db.Column(db.DataTime, nullable=False)
-  which = db.Column(db.Integer, nullable=False)
-  type = db.Column(db.String(128), nullable=False)
+  job_id = db.Column(db.Integer, nullable=False)
+  applied_at = db.Column(db.Datatime, nullable=False)
+  on_shortlist = db.Column(db.Boolean, nullable=False)
 
   # class constructor
   def __init__(self, data):
     """
     Class constructor
     """
-    self.who = data.get('who')
-    self.when = data.get("when")
-    self.which = data.get("which")
-    self.type = data.get('type')
+    self.job_id = data.get('job_id')
+    self.applied_at = data.get("applied_at")
+    self.on_shortlist = data.get("on_shortlist")
 
   def save(self):
     db.session.add(self)
@@ -67,10 +62,9 @@ class ProfileViewHistoryModel(db.Model):
   # def __repr(self):
   #   return '<id {}>'.format(self.id)
 
-class ProfileViewHistorySchema(Schema):
+class AppliedJobSchema(Schema):
   id = fields.Int(dump_only=True)
-  who = fields.Int(required=True)
-  when = fields.DateTime(required=True)
-  which = fields.Int(required=True)
-  type = fields.Str(required=True)
+  job_id = fields.Int(required=True)
+  applied_at = fields.DateTime(required=True)
+  on_shortlist = fields.Boolean(required=True)
 
