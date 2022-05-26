@@ -1,30 +1,36 @@
-# src/models/ProfileModel.py
+# src/models/VideoModel.py
+from msilib import sequence
+from turtle import title
 from marshmallow import fields, Schema
 import datetime
 
 from . import db, bcrypt
 
-class ProfileModel(db.Model):
+class VideoModel(db.Model):
   """
-  Profile Model
+  Video Model
   """
   # table name
-  __tablename__ = 'profiles'
+  __tablename__ = 'videos'
 
   id = db.Column(db.Integer, primary_key=True)
-  avator = db.Column(db.String(128), nullable=False)
-  resume = db.Column(db.String(128), nullable=False)
   target_id = db.Column(db.Integer)
-  type = db.Column(db.String(128))
+  title = db.Column(db.String(128), nullable=False)
+  url = db.Column(db.String(128), nullable=False)
+  duration = db.Column(db.String(128), nullable=False)
+  sequence = db.Column(db.Integer, nullable=False)
+  type = db.Column(db.String(128), nullable=False)
 
   # class constructor
   def __init__(self, data):
     """
     Class constructor
     """
-    self.avator = data.get('avator')
-    self.resume = data.get("resume")
+    self.title = data.get('title')
+    self.url = data.get("url")
     self.target_id = data.get("target_id")
+    self.duration = data.get('duration')
+    self.sequence = data.get('sequence')
     self.type = data.get('type')
 
   def save(self):
@@ -64,10 +70,12 @@ class ProfileModel(db.Model):
   # def __repr(self):
   #   return '<id {}>'.format(self.id)
 
-class ProfileSchema(Schema):
+class VideoSchema(Schema):
   id = fields.Int(dump_only=True)
-  avator = fields.Str(required=True)
-  resume = fields.Str(required=True)
   target_id = fields.Int(required=True)
+  title = fields.Str(required=True)
+  url = fields.Str(required=True)
+  duration = fields.Str(required=True)
+  sequence = fields.Int(required=True)
   type = fields.Str(required=True)
 

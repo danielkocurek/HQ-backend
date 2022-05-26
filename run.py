@@ -3,10 +3,11 @@ import os
 from dotenv import load_dotenv, find_dotenv
 
 from src.app import create_app
-from src.models import UserModel, TalentModel, db
+# from src.models import UserModel, TalentModel, db
 from flask_migrate import Migrate
-
-from src.models.TalentModel import TalentModel
+from src.models import *
+from src.models.VideoModel import VideoModel
+# from src.models.TalentModel import TalentModel
 load_dotenv(find_dotenv())
 
 env_name = os.getenv('FLASK_ENV')
@@ -15,7 +16,7 @@ migrate = Migrate(app, db)
 
 @app.shell_context_processor
 def make_shell_context():
-    return dict(app=app, db=db, UserModel=UserModel, TalentModel=TalentModel)
+    return dict(app=app, db=db, UserModel=UserModel, TalentModel=TalentModel, ProfileModel=ProfileModel, VideoModel=VideoModel)
 
 if __name__ == '__main__':
   port = os.getenv('PORT')
