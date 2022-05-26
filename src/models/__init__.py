@@ -10,3 +10,4 @@ bcrypt = Bcrypt()
 
 from .TalentModel import TalentModel, TalentSchema
 from .UserModel import UserModel, UserSchema
+from .ProfileModel import ProfileModel, ProfileSchema

@@ -80,7 +80,7 @@ class TalentSchema(Schema):
     user_id = fields.Int(required = True)
     first_name = fields.Str(required = True)
     last_name = fields.Str(required = True)
-    phone_number = fields.Str(required = True)
+    phone_number = fields.Str()
     current_jobTitle = fields.Str(required = True)
     current_jobDescription = fields.Str(required = True)
     region = fields.Dict(keys=fields.Str(), values=fields.Str(), required = True)

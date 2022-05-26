@@ -26,8 +26,9 @@ class Auth():
         payload,
         os.getenv('JWT_SECRET_KEY'),
         'HS256'
-      ).decode("utf-8")
+      )
     except Exception as e:
+      print("xxxxxxxxxxxxxxx", e)
       return Response(
         mimetype="application/json",
         response=json.dumps({'error': 'error in generating user token'}),
@@ -41,14 +42,15 @@ class Auth():
     """
     re = {'data': {}, 'error': {}}
     try:
-      payload = jwt.decode(token, os.getenv('JWT_SECRET_KEY'))
+      payload = jwt.decode(token, os.getenv('JWT_SECRET_KEY'),['HS256'])
       re['data'] = {'user_id': payload['sub']}
       return re
     except jwt.ExpiredSignatureError as e1:
       re['error'] = {'message': 'token expired, please login again'}
       return re
-    except jwt.InvalidTokenError:
+    except jwt.InvalidTokenError as error:
       re['error'] = {'message': 'Invalid token, please try again with a new token'}
+      print(error)
       return re
 
   # decorator

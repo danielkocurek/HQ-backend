@@ -14,13 +14,13 @@ def create():
   Create Talent Function
   """
   req_data = request.get_json()
-  req_data['owner_id'] = g.user.get('id')
-  data, error = talent_schema.load(req_data)
-  if error:
-    return custom_response(error, 400)
+  print(req_data)
+  data = talent_schema.load(req_data)
+  # if error:
+  #   return custom_response(error, 400)
   post = TalentModel(data)
   post.save()
-  data = talent_schema.dump(post).data
+  data = talent_schema.dump(post)
   return custom_response(data, 201)
 
 @talent_api.route('/', methods=['GET'])
