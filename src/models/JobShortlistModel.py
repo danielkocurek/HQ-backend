@@ -1,34 +1,27 @@
-# src/models/ProfileViewHistoryModel.py
-from __future__ import with_statement
-from msilib import sequence
-from turtle import title
+# src/models/JobShortlistModel.py
 from marshmallow import fields, Schema
 import datetime
 
 from . import db, bcrypt
 
-class ProfileViewHistoryModel(db.Model):
+class JobShortlistModel(db.Model):
   """
-  ProfileViewHistory Model
+  JobShortlist Model
   """
   # table name
-  __tablename__ = 'profileviewhistories'
+  __tablename__ = 'jobshortlists'
 
   id = db.Column(db.Integer, primary_key=True)
-  who = db.Column(db.Integer, nullable=False)
-  when = db.Column(db.DateTime, nullable=False)
-  which = db.Column(db.Integer, nullable=False)
-  type = db.Column(db.String(128), nullable=False)
+  talent_id = db.Column(db.Integer, nullable=False)
+  job_id = db.Column(db.Integer, nullable=False)
 
   # class constructor
   def __init__(self, data):
     """
     Class constructor
     """
-    self.who = data.get('who')
-    self.when = data.get("when")
-    self.which = data.get("which")
-    self.type = data.get('type')
+    self.job_id = data.get('job_id')
+    self.talent_id = data.get("talent_id")
 
   def save(self):
     db.session.add(self)
@@ -67,10 +60,8 @@ class ProfileViewHistoryModel(db.Model):
   # def __repr(self):
   #   return '<id {}>'.format(self.id)
 
-class ProfileViewHistorySchema(Schema):
+class JobShortlistSchema(Schema):
   id = fields.Int(dump_only=True)
-  who = fields.Int(required=True)
-  when = fields.DateTime(required=True)
-  which = fields.Int(required=True)
-  type = fields.Str(required=True)
+  talent_id = fields.Int(required=True)
+  job_id = fields.Int(required=True)
 
