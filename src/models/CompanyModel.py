@@ -1,29 +1,35 @@
-# src/models/AppliedJobModel.py
+# src/models/CompanyModel.py
 from marshmallow import fields, Schema
 import datetime
+from sqlalchemy.dialects.postgresql import JSON
 
 from . import db, bcrypt
 
-class AppliedJobModel(db.Model):
+class CompanyModel(db.Model):
   """
-  AppliedJob Model
+  Company Model
   """
   # table name
-  __tablename__ = 'appliedjobs'
+  __tablename__ = 'companies'
 
   id = db.Column(db.Integer, primary_key=True)
-  job_id = db.Column(db.Integer, nullable=False)
-  applied_at = db.Column(db.DateTime, nullable=False)
-  on_shortlist = db.Column(db.Boolean, nullable=False)
+  name = db.Column(db.String(128), nullable=False)
+  title = db.Column(db.String(128), nullable=False)
+  description = db.Column(db.String(128), nullable=False)
+  region = db.Column(JSON)
+  account_manager_name = db.Column(db.String(128), nullable=False)
+  
 
   # class constructor
   def __init__(self, data):
     """
     Class constructor
     """
-    self.job_id = data.get('job_id')
-    self.applied_at = data.get("applied_at")
-    self.on_shortlist = data.get("on_shortlist")
+    self.name = data.get('name')
+    self.title = data.get("title")
+    self.description = data.get("description")
+    self.region = data.get("region")
+    self.account_manager_name = data.get("account_manager_name")
 
   def save(self):
     db.session.add(self)
@@ -62,9 +68,11 @@ class AppliedJobModel(db.Model):
   # def __repr(self):
   #   return '<id {}>'.format(self.id)
 
-class AppliedJobSchema(Schema):
+class CompanySchema(Schema):
   id = fields.Int(dump_only=True)
-  job_id = fields.Int(required=True)
-  applied_at = fields.DateTime(required=True)
-  on_shortlist = fields.Boolean(required=True)
+  name = fields.Str(required=True)
+  title = fields.Str(required=True)
+  description = fields.Str(required=True)
+  region = fields.Dict(keys=fields.Str(), values=fields.Str(), required = True)
+  account_manager_name = fields.Str(required=True)
 
