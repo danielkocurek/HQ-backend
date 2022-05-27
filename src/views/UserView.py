@@ -68,13 +68,11 @@ def update():
   Update me
   """
   req_data = request.get_json()
-  data, error = user_schema.load(req_data, partial=True)
-  if error:
-    return custom_response(error, 400)
+  data = user_schema.load(req_data, partial=True)
 
   user = UserModel.get_one_user(g.user.get('id'))
   user.update(data)
-  ser_user = user_schema.dump(user).data
+  ser_user = user_schema.dump(user)
   return custom_response(ser_user, 200)
 
 @user_api.route('/me', methods=['DELETE'])
@@ -105,9 +103,9 @@ def login():
   """
   req_data = request.get_json()
 
-  data, error = user_schema.load(req_data, partial=True)
-  if error:
-    return custom_response(error, 400)
+  data = user_schema.load(req_data, partial=True)
+  # if error:
+  #   return custom_response(error, 400)
   if not data.get('email') or not data.get('password'):
     return custom_response({'error': 'you need email and password to sign in'}, 400)
   user = UserModel.get_user_by_email(data.get('email'))
@@ -115,9 +113,9 @@ def login():
     return custom_response({'error': 'invalid credentials'}, 400)
   if not user.check_hash(data.get('password')):
     return custom_response({'error': 'invalid credentials'}, 400)
-  ser_data = user_schema.dump(user).data
+  ser_data = user_schema.dump(user)
   token = Auth.generate_token(ser_data.get('id'))
-  return custom_response({'jwt_token': token}, 200)
+  return custom_response({'jwt_token': token, "user_id":ser_data.get('id')}, 200)
 
   
 

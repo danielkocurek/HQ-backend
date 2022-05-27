@@ -1,0 +1,126 @@
+[{
+    "title": "User",
+    "Api": [
+        {
+            "Name": "Login",
+            "Url": "/api/v1/users/login",
+            "method": "POST",
+            "Request_Data": {
+                "email": "//_required",
+                "password": "//_required"
+            },
+            "Response_Date": {
+                "jwt_token": "",
+                "user_id": ""
+            }
+        },
+        {
+            "Name": "SignUP",
+            "Url": "/api/v1/users",
+            "method": "POST",
+            "Request_Data": {
+                "email": "//_required",
+                "password": "//_required",
+                "type": "//_required"
+            },
+            "Response_Date": {
+                "jwt_token": ""
+            }
+        },
+        {
+            "Name": "User Update",
+            "Url": "/api/v1/users/me",
+            "method": "PUT",
+            "Request_Data": {
+                "email": "",
+                "password": ""
+            },
+            "Response_Date": {
+                "email": "",
+                "password": "",
+                "type": ""
+            }
+        }
+    ]
+},
+{
+    "title":"Talent",
+    "Api": [
+        {
+            "Name":"Create",
+            "Url": "/api/v1/talents",
+            "method": "POST",
+            "Request_Data" :{
+                "user_id": "//_required",
+                "first_name": "//_required",
+                "last_name": "//_required",
+                "phone_number": "",
+                "region": {"key":"//_required"},
+                "current_jobTitle": "//_required",
+                "current_jobDescription": "//_required"
+            },
+            "Response_Date": {
+                "id": "",
+                "user_id": "",
+                "first_name": "",
+                "last_name": "",
+                "phone_number": "",
+                "region": {
+                    "key": "value"
+                },
+                "current_jobDescription": "",
+                "current_jobTitle": ""
+            }
+        }
+    ]
+},
+{
+    "title":"Company",
+    "Api": [
+        {
+            "Name":"Create",
+            "Url": "/api/v1/companies",
+            "method": "POST",
+            "Request_Data" :{
+                "name": "//_required",
+                "title": "//_required",
+                "description": "//_required",
+                "region": {"city": "//_required",
+                          "country":"//_required"},
+                "account_manager_name": "//_required"
+            },
+            "Response_Date": {
+                "id": "",
+                "name": "",
+                "title": "",
+                "description": "",
+                "region": {"city": "",
+                          "country":""},
+                "account_manager_name": ""
+            }
+        },
+        {
+            "Name":"Update",
+            "Url": "/api/v1/companies/update/[:id]",
+            "method": "PUT",
+            "Request_Data" :{
+                "name": "",
+                "title": "",
+                "description": "",
+                "region": {"city": "",
+                          "country":""},
+                "account_manager_name": ""
+            },
+            "Response_Date": {
+                "id": "",
+                "name": "",
+                "title": "",
+                "description": "",
+                "region": {"city": "",
+                          "country":""},
+                "account_manager_name": ""
+            }
+        }
+    ] 
+}
+]
