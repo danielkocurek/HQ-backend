@@ -9,6 +9,7 @@ from .models import db, bcrypt
 from .views.UserView import user_api as user_blueprint
 from .views.TalentView import talent_api as talent_blueprint
 from .views.CompanyView import company_api as company_blueprint
+from .views.JobView import job_api as job_blueprint
 
 
 def create_app(env_name):
@@ -28,6 +29,7 @@ def create_app(env_name):
   app.register_blueprint(user_blueprint, url_prefix='/api/v1/users')
   app.register_blueprint(talent_blueprint, url_prefix='/api/v1/talents')
   app.register_blueprint(company_blueprint, url_prefix='/api/v1/companies')
+  app.register_blueprint(job_blueprint, url_prefix='/api/v1/jobs')
 
   @app.route('/', methods=['GET'])
   def index():

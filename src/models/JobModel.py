@@ -1,5 +1,6 @@
 # src/models/JobModel.py
 from marshmallow import fields, Schema
+from sqlalchemy import JSON
 from sqlalchemy.dialects.postgresql import ARRAY
 import datetime
 
@@ -14,11 +15,12 @@ class JobModel(db.Model):
 
   id = db.Column(db.Integer, primary_key=True)
   title = db.Column(db.String(128), nullable=False)
-  description = db.Column(db.String(128), nullable=False)
-  post_at = db.Column(db.DateTime, nullable=False)
-  updated_at = db.Column(db.DateTime, nullable=False)
-  status = db.Column(db.String(128), nullable=False)
-  candidates = db.Column(ARRAY(db.String(128)), nullable=False)
+  region = db.Column(JSON, nullable=False)
+  experience_year = db.Column(db.String(128), nullable=False)
+  education = db.Column(db.String(128), nullable=False)
+  salary = db.Column(db.String(128))
+  department = db.Column(db.String(128), nullable=False)
+  roles = db.Column(ARRAY(db.String(128)), nullable=False)
 
   
 
@@ -28,55 +30,39 @@ class JobModel(db.Model):
     Class constructor
     """
     self.title = data.get("title")
-    self.description = data.get("description")
-    self.post_at = data.get("post_at")
-    self.updated_at = data.get("updated_at")
-    self.status = data.get("status")
-    self.candidates = data.get("candidates")
+    self.region = data.get("region")
+    self.experience_year = data.get("experience_year")
+    self.education = data.get("education")
+    self.salary = data.get("salary")
+    self.department = data.get("department")
+    self.roles = data.get("roles")
     
   def save(self):
     db.session.add(self)
     db.session.commit()
 
-  # def update(self, data):
-  #   for key, item in data.items():
-  #     if key == 'password':
-  #       self.password = self.__generate_hash(item)
-  #     setattr(self, key, item)
-  #   self.modified_at = datetime.datetime.utcnow()
-  #   db.session.commit()
+  def update(self, data):
+    for key, item in data.items():
+      if key == 'password':
+        self.password = self.__generate_hash(item)
+      setattr(self, key, item)
+    self.modified_at = datetime.datetime.utcnow()
+    db.session.commit()
 
   def delete(self):
     db.session.delete(self)
     db.session.commit()
 
-  # @staticmethod
-  # def get_all_users():
-  #   return ProfileModel.query.all()
-
-  # @staticmethod
-  # def get_one_user(id):
-  #   return ProfileModel.query.get(id)
-  
-  # @staticmethod
-  # def get_user_by_email(value):
-  #   return ProfileModel.query.filter_by(email=value).first()
-
-  # def __generate_hash(self, password):
-  #   return bcrypt.generate_password_hash(password, rounds=10).decode("utf-8")
-  
-  # def check_hash(self, password):
-  #   return bcrypt.check_password_hash(self.password, password)
-  
-  # def __repr(self):
-  #   return '<id {}>'.format(self.id)
-
-class CompanySchema(Schema):
+  @staticmethod
+  def get_job_by_id(id):
+    return JobModel.query.get(id)
+class JobSchema(Schema):
   id = fields.Int(dump_only=True)
   title = fields.Str(required=True)
-  description = fields.Str(required=True)
-  post_at = fields.DateTime(required=True)
-  updated_at = fields.DateTime(required=True)
-  status = fields.Str(required=True)
-  candidates = fields.Dict(required=True)
+  region = fields.Dict(required=True)
+  experience_year = fields.Str(required=True)
+  education = fields.Str(required=True)
+  salary = fields.Str()
+  department = fields.Str(required=True)
+  roles = fields.List(fields.String(), required=True)
 

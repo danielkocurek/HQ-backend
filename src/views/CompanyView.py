@@ -1,4 +1,4 @@
-#/src/views/BlogpostView.py
+#/src/views/CompanyView.py
 from flask import request, g, Blueprint, json, Response
 from ..shared.Authentication import Auth
 from ..models.CompanyModel import *
@@ -14,7 +14,6 @@ def create():
   Create Company profile
   """
   req_data = request.get_json()
-  print(req_data)
   data = company_schema.load(req_data)
   # if error:
   #   return custom_response(error, 400)

@@ -10,6 +10,7 @@
                     "email": "//_required",
                     "password": "//_required"
                 },
+                "Body_Data":{},
                 "Response_Date": {
                     "jwt_token": "",
                     "user_id": ""
@@ -24,6 +25,7 @@
                     "password": "//_required",
                     "type": "//_required"
                 },
+                "Body_Data":{},
                 "Response_Date": {
                     "jwt_token": ""
                 }
@@ -35,6 +37,9 @@
                 "Request_Data": {
                     "email": "",
                     "password": ""
+                },
+                "Body_Data":{
+                    "api-token":"//_required"
                 },
                 "Response_Date": {
                     "email": "",
@@ -61,6 +66,9 @@
                     },
                     "current_jobTitle": "//_required",
                     "current_jobDescription": "//_required"
+                },
+                "Body_Data":{
+                    "api-token":"//_required"
                 },
                 "Response_Date": {
                     "id": "",
@@ -95,6 +103,9 @@
                     },
                     "account_manager_name": "//_required"
                 },
+                "Body_Data":{
+                    "api-token":"//_required"
+                },
                 "Response_Date": {
                     "id": "",
                     "name": "",
@@ -123,6 +134,9 @@
                     },
                     "account_manager_name": ""
                 },
+                "Body_Data":{
+                    "api-token":"//_required"
+                },
                 "Response_Date": {
                     "id": "",
                     "name": "",
@@ -134,6 +148,73 @@
                         "country": ""
                     },
                     "account_manager_name": ""
+                }
+            }
+        ]
+    },
+    {
+        "title": "JOb",
+        "Api": [
+            {
+                "Name": "Create",
+                "Url": "/api/v1/jobs",
+                "method": "POST",
+                "Request_Data": {
+                    "title": "//_required",
+                    "experience_year": "//_required",
+                    "region": {
+                        "key":"//_required"
+                    },
+                    "education": "//_required",
+                    "salary": "",
+                    "department": "//_required",
+                    "roles": ["//_required"]
+                },
+                "Body_Data":{
+                    "api-token":"//_required"
+                },
+                "Response_Date": {
+                    "id": "",
+                    "title": "",
+                    "experience_year": "",
+                    "region": {
+                        "key":""
+                    },
+                    "education": "",
+                    "salary": "",
+                    "department": "",
+                    "roles": [""]
+                }
+            },
+            {
+                "Name": "Update",
+                "Url": "/api/v1/jobs/update/[:id]",
+                "method": "POST",
+                "Request_Data": {
+                    "title": "",
+                    "experience_year": "",
+                    "region": {
+                        "key":""
+                    },
+                    "education": "",
+                    "salary": "",
+                    "department": "",
+                    "roles": [""]
+                },
+                "Body_Data":{
+                    "api-token":"//_required"
+                },
+                "Response_Date": {
+                    "id": "",
+                    "title": "",
+                    "experience_year": "",
+                    "region": {
+                        "key":""
+                    },
+                    "education": "",
+                    "salary": "",
+                    "department": "",
+                    "roles": [""]
                 }
             }
         ]
