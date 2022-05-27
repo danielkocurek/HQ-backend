@@ -17,6 +17,7 @@ class CompanyModel(db.Model):
   title = db.Column(db.String(128), nullable=False)
   description = db.Column(db.String(128), nullable=False)
   region = db.Column(JSON)
+  phone_number = db.Column(db.String(128), nullable=False)
   account_manager_name = db.Column(db.String(128), nullable=False)
   
 
@@ -29,6 +30,7 @@ class CompanyModel(db.Model):
     self.title = data.get("title")
     self.description = data.get("description")
     self.region = data.get("region")
+    self.phone_number = data.get("phone_number")
     self.account_manager_name = data.get("account_manager_name")
 
   def save(self):
@@ -73,6 +75,7 @@ class CompanySchema(Schema):
   name = fields.Str(required=True)
   title = fields.Str(required=True)
   description = fields.Str(required=True)
+  phone_number = fields.Str(required=True)
   region = fields.Dict(keys=fields.Str(), values=fields.Str(), required = True)
   account_manager_name = fields.Str(required=True)
 

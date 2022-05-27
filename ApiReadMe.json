@@ -85,6 +85,7 @@
                 "name": "//_required",
                 "title": "//_required",
                 "description": "//_required",
+                "phone_number": "//_required",
                 "region": {"city": "//_required",
                           "country":"//_required"},
                 "account_manager_name": "//_required"
@@ -94,6 +95,7 @@
                 "name": "",
                 "title": "",
                 "description": "",
+                "phone_number": "",
                 "region": {"city": "",
                           "country":""},
                 "account_manager_name": ""
@@ -107,6 +109,7 @@
                 "name": "",
                 "title": "",
                 "description": "",
+                "phone_number": "",
                 "region": {"city": "",
                           "country":""},
                 "account_manager_name": ""
@@ -116,6 +119,7 @@
                 "name": "",
                 "title": "",
                 "description": "",
+                "phone_number": "//_required",
                 "region": {"city": "",
                           "country":""},
                 "account_manager_name": ""
