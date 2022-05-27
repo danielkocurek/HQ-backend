@@ -8,6 +8,7 @@ from flask_migrate import Migrate
 from src.models import *
 from src.models.AppliedJobModel import AppliedJobModel
 from src.models.CompanyModel import CompanyModel
+from src.models.JobModel import JobModel
 from src.models.JobShortlistModel import JobShortlistModel
 from src.models.ProfileViewHistoryModel import ProfileViewHistoryModel
 from src.models.VideoModel import VideoModel
@@ -20,7 +21,7 @@ migrate = Migrate(app, db)
 
 @app.shell_context_processor
 def make_shell_context():
-    return dict(app=app, db=db, UserModel=UserModel, TalentModel=TalentModel, ProfileModel=ProfileModel, VideoModel=VideoModel, ProfileViewHistoryModel=ProfileViewHistoryModel, AppliedJobModel=AppliedJobModel, JobShortlistModel=JobShortlistModel, CompanyModel=CompanyModel)
+    return dict(app=app, db=db, UserModel=UserModel, TalentModel=TalentModel, ProfileModel=ProfileModel, VideoModel=VideoModel, ProfileViewHistoryModel=ProfileViewHistoryModel, AppliedJobModel=AppliedJobModel, JobShortlistModel=JobShortlistModel, CompanyModel=CompanyModel, JobModel=JobModel)
 
 if __name__ == '__main__':
   port = os.getenv('PORT')
