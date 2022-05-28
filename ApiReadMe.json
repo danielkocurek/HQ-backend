@@ -27,6 +27,21 @@
                 },
                 "Body_Data":{},
                 "Response_Date": {
+                    "status": "success"
+                }
+            },
+            {
+                "Name": "Verify",
+                "Url": "/api/v1/users/verify",
+                "method": "POST",
+                "Request_Data": {
+                    "email": "//_required",
+                    "sms_code": "//_required",
+                    "password":"//_required",
+                    "type":"//_required"
+                },
+                "Body_Data":{},
+                "Response_Date": {
                     "jwt_token": ""
                 }
             },

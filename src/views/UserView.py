@@ -25,16 +25,57 @@ def create():
   
   # check if user already exist in the db
   user_in_db = UserModel.get_user_by_email(data.get('email'))
-  if user_in_db:
-    message = {'error': 'User already exist, please supply another email address'}
-    return custom_response(message, 400)
-  
+  print(user_schema.dump(user_in_db).get('register_status'))
+  if user_in_db :
+    if user_schema.dump(user_in_db).get('register_status'):
+      message = {'error': 'User already exist, please supply another email address'}
+      return custom_response(message, 400)
+    else :
+      user = UserModel(data)
+      user.update(data)
+      return custom_response({'status': 'success'}, 201)    
+    
   user = UserModel(data)
   user.save()
   ser_data = user_schema.dump(user)
   print("=======================")
   print(ser_data.get('id'))
-  token = Auth.generate_token(ser_data.get('id'))
+  # token = Auth.generate_token(ser_data.get('id'))
+  # print(token)
+  return custom_response({'status': 'success'}, 201)
+
+@user_api.route('/verify', methods=['POST'])
+def verify():
+  """
+  Create User Function
+  """
+  req_data = request.get_json()
+  try:
+    data = user_schema.load(req_data)
+  except ValidationError as error:
+    print("ERROR: package.json is invalid")
+    print(error.messages)
+    return custom_response(error, 400)
+  # if error:
+  #   return custom_response(error, 400)
+  
+  # check if user already exist in the db
+  user_in_db = UserModel.get_user_by_email(data.get('email'))
+  update_user = user_schema.dump(user_in_db)
+  print(update_user)
+  # for key, item in update_user.items():
+  if user_schema.dump(user_in_db).get('verify_code') != data.get('verify_code'):
+    message = {'error': 'Failed Verify code, Please check code in your email'}
+    return custom_response(message, 400)
+  update_user['register_status'] = True
+  print(update_user)
+
+  # setattr(data, key, item)
+  # user = UserModel(user_in_db)
+  user_in_db.update(update_user)
+  print("=======================")
+  print(update_user.get('id'))
+  token = Auth.generate_token(update_user.get('id'))
   print(token)
   return custom_response({'jwt_token': token}, 201)
 

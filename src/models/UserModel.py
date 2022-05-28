@@ -1,6 +1,7 @@
 # src/models/UserModel.py
 from marshmallow import fields, Schema
 import datetime
+from random import randrange
 
 from . import db, bcrypt
 # import enum
@@ -46,6 +47,8 @@ class UserModel(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   email = db.Column(db.String(128), unique=True, nullable=False)
   password = db.Column(db.String(128), nullable=False)
+  verify_code = db.Column(db.Integer)
+  register_status = db.Column(db.Boolean)
   created_at = db.Column(db.DateTime)
   modified_at = db.Column(db.DateTime)
   type = db.Column(db.String(128))
@@ -57,6 +60,8 @@ class UserModel(db.Model):
     """
     self.email = data.get('email')
     self.password = self.__generate_hash(data.get('password'))
+    self.verify_code = randrange(1000,9999,4)
+    self.register_status = False
     self.created_at = datetime.datetime.utcnow()
     self.modified_at = datetime.datetime.utcnow()
     self.type = data.get('type')
@@ -102,6 +107,8 @@ class UserSchema(Schema):
   id = fields.Int(dump_only=True)
   email = fields.Email(required=True)
   password = fields.Str(required=True, load_only=True)
+  verify_code = fields.Int()
+  register_status = fields.Bool()
   created_at = fields.DateTime(dump_only=True)
   modified_at = fields.DateTime(dump_only=True)
   type = fields.Str(required=True)
