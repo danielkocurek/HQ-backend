@@ -13,7 +13,9 @@
                 "Body_Data":{},
                 "Response_Date": {
                     "jwt_token": "",
-                    "user_id": ""
+                    "id": "",
+                    "email": "",
+                    "type": ""
                 }
             },
             {
@@ -261,6 +263,29 @@
                 },
                 "Response_Date": {
                     "url": ""
+                }
+            }
+        ]
+    },
+    {
+        "title": "Profile",
+        "Api": [
+            {
+                "Name": "Create Profile",
+                "Url": "/api/v1/profiles",
+                "method": "POST",
+                "Request_Data": {
+                    "avator": "//_required",
+                    "resume": "//_required",
+                    "video": "//_required",
+                    "type": "//_required",
+                    "target_id": "//_required"
+                },
+                "Body_Data":{
+                    "api-token":"//_required"
+                },
+                "Response_Date": {
+                    "status": ""
                 }
             }
         ]

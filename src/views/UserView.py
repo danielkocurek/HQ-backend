@@ -1,13 +1,18 @@
 #/src/views/UserView
 
+from distutils.log import error
 from random import randrange
 from flask import request, json, Response, Blueprint, g
 from marshmallow import ValidationError
 from ..models.UserModel import UserModel, UserSchema
 from ..shared.Authentication import Auth
+import smtplib
 
 user_api = Blueprint('user_api', __name__)
 user_schema = UserSchema()
+
+gmail_user = 'appc31058@gmail.com'
+gmail_password = 'j99807jj!@#123'
 
 @user_api.route('/', methods=['POST'])
 def create():
@@ -26,7 +31,7 @@ def create():
   
   # check if user already exist in the db
   user_in_db = UserModel.get_user_by_email(data.get('email'))
-  print(user_schema.dump(user_in_db).get('register_status'))
+  print(user_schema.dump(user_in_db).get('verify_code'))
   if user_in_db :
     if user_schema.dump(user_in_db).get('register_status'):
       message = {'error': 'User already exist, please supply another email address'}
@@ -34,6 +39,7 @@ def create():
     else :
       user = UserModel(data)
       user.update(data)
+      # sms_code_send(user_schema.dump(user_in_db).get('verify_code'),user_schema.dump(user_in_db).get('email') )
       return custom_response({'status': 'success'}, 200)    
     
   user = UserModel(data)
@@ -43,6 +49,7 @@ def create():
   print(ser_data.get('id'))
   # token = Auth.generate_token(ser_data.get('id'))
   # print(token)
+  # sms_code_send(user_schema.dump(user_in_db).get('verify_code'),user_schema.dump(user_in_db).get('email') )
   return custom_response({'status': 'success'}, 200)
 
 @user_api.route('/verify', methods=['POST'])
@@ -61,6 +68,7 @@ def verify():
   #   return custom_response(error, 400)
   
   # check if user already exist in the db
+
   user_in_db = UserModel.get_user_by_email(data.get('email'))
   update_user = user_schema.dump(user_in_db)
   print(update_user)
@@ -104,16 +112,14 @@ def resend():
   #   message = {'error': 'Failed Verify code, Please check code in your email'}
   #   return custom_response(message, 400)
   update_user['verify_code'] = randrange(1000,9999,4)
+  user_in_db.update(update_user)
+  # sms_code_send(update_user['verify_code'],update_user['email'] )
   print(update_user)
 
   # setattr(data, key, item)
   # user = UserModel(user_in_db)
-  user_in_db.update(update_user)
-  print("=======================")
-  print(update_user.get('id'))
-  token = Auth.generate_token(update_user.get('id'))
-  print(token)
-  return custom_response({'jwt_token': token}, 201)
+
+  return custom_response({'statuse': 'success'}, 201)
 
 @user_api.route('/', methods=['GET'])
 @Auth.auth_required
@@ -179,8 +185,14 @@ def login():
   User Login Function
   """
   req_data = request.get_json()
-
-  data = user_schema.load(req_data, partial=True)
+  print(req_data)
+  
+  try:
+    data = user_schema.load(req_data, partial=True)
+  except ValidationError as error:
+    print("ERROR: package.json is invalid")
+    print(error.messages)
+    return custom_response(error, 400)
   # if error:
   #   return custom_response(error, 400)
   if not data.get('email') or not data.get('password'):
@@ -192,9 +204,30 @@ def login():
     return custom_response({'error': 'invalid credentials'}, 400)
   ser_data = user_schema.dump(user)
   token = Auth.generate_token(ser_data.get('id'))
-  return custom_response({'jwt_token': token, "user_id":ser_data.get('id')}, 200)
+  return custom_response({'jwt_token': token, "id":ser_data.get('id'), "email":ser_data.get('email'), "type":ser_data.get('type')}, 200)
 
-  
+def sms_code_send(sms_code, to_address):
+  print(sms_code, to_address)
+  subject = "SMS Verify"
+  body = "Please check sms code to login, SMS_CODE: %s" % sms_code
+  email_text = """\
+  From: %s
+  To: %s
+  Subject: %s
+
+  %s
+  """ % (gmail_user, to_address, subject, body)
+  try:
+    smtp_server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+    smtp_server.ehlo()
+    smtp_server.login(gmail_user, gmail_password)
+    smtp_server.sendmail(gmail_user, to_address, email_text)
+    smtp_server.close()
+    print("Email sent successfully!")
+    return custom_response({'status':'success'},200)
+  except Exception as ex:
+    print("Something went wrong….",ex)  
+    return custom_response(ex,400)
 
 def custom_response(res, status_code):
   """
