@@ -14,6 +14,7 @@ class ProfileModel(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   avator = db.Column(db.String(128), nullable=False)
   resume = db.Column(db.String(128), nullable=False)
+  video = db.Column(db.String(128), nullable=False)
   target_id = db.Column(db.Integer)
   type = db.Column(db.String(128))
 
@@ -24,6 +25,7 @@ class ProfileModel(db.Model):
     """
     self.avator = data.get('avator')
     self.resume = data.get("resume")
+    self.video = data.get("video")
     self.target_id = data.get("target_id")
     self.type = data.get('type')
 
@@ -68,6 +70,7 @@ class ProfileSchema(Schema):
   id = fields.Int(dump_only=True)
   avator = fields.Str(required=True)
   resume = fields.Str(required=True)
+  video = fields.Str(required=True)
   target_id = fields.Int(required=True)
   type = fields.Str(required=True)
 

@@ -233,5 +233,36 @@
                 }
             }
         ]
+    },
+    {
+        "title": "Video",
+        "Api": [
+            {
+                "Name": "Upload file",
+                "Url": "/api/v1/videos/file",
+                "method": "POST",
+                "Request_Data": {
+                    "file": "//_required(mp4, pdf, jpg)"
+                },
+                "Body_Data":{
+                    "api-token":"//_required"
+                },
+                "Response_Date": {
+                    "url": ""
+                }
+            },
+            {
+                "Name": "Display file",
+                "Url": "/api/v1/videos/display/<filename>",
+                "method": "GET",
+                "Request_Data": {
+                },
+                "Body_Data":{
+                },
+                "Response_Date": {
+                    "url": ""
+                }
+            }
+        ]
     }
 ]

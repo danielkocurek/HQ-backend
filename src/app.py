@@ -13,6 +13,7 @@ from .views.UserView import user_api as user_blueprint
 from .views.TalentView import talent_api as talent_blueprint
 from .views.CompanyView import company_api as company_blueprint
 from .views.JobView import job_api as job_blueprint
+from .views.VideoView import video_api as video_blueprint
 
 UPLOAD_FOLDER = 'static/uploads/'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'mp4'}
@@ -39,6 +40,7 @@ def create_app(env_name):
   app.register_blueprint(talent_blueprint, url_prefix='/api/v1/talents')
   app.register_blueprint(company_blueprint, url_prefix='/api/v1/companies')
   app.register_blueprint(job_blueprint, url_prefix='/api/v1/jobs')
+  app.register_blueprint(video_blueprint, url_prefix='/api/v1/videos')
 
   @app.route('/', methods=['GET'])
   def index():
