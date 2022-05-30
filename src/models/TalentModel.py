@@ -22,8 +22,9 @@ class TalentModel(db.Model):
     last_name = db.Column(db.String(128), nullable=False)
     phone_number = db.Column(db.String(128), nullable=True)
     region = db.Column(JSON)
-    current_jobTitle = db.Column(db.String(128), nullable=False)
-    current_jobDescription = db.Column(db.Text, nullable=False)
+    current_jobTitle = db.Column(db.String(128))
+    company = db.Column(db.String(128))
+    current_jobDescription = db.Column(db.String(128))
 
     # class constructor
     def __init__(self, data):
@@ -36,6 +37,7 @@ class TalentModel(db.Model):
         self.phone_number = data.get('phone_number')
         self.region = data.get('region')
         self.current_jobDescription = data.get('current_jobDescription')
+        self.company = data.get('company')
         self.current_jobTitle = data.get('current_jobTitle')
 
     def save(self):
@@ -81,7 +83,8 @@ class TalentSchema(Schema):
     first_name = fields.Str(required = True)
     last_name = fields.Str(required = True)
     phone_number = fields.Str()
-    current_jobTitle = fields.Str(required = True)
-    current_jobDescription = fields.Str(required = True)
-    region = fields.Dict(keys=fields.Str(), values=fields.Str(), required = True)
+    current_jobTitle = fields.Str()
+    company = fields.Str()
+    current_jobDescription = fields.Str()
+    region = fields.Dict(keys=fields.Str(), values=fields.Str())
 
