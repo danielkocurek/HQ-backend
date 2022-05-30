@@ -1,6 +1,9 @@
 #src/app.py
 
-from flask import Flask
+from flask import Flask, redirect, render_template, url_for, request, json, Response, flash
+import os
+from werkzeug.utils import secure_filename
+
 
 from .config import app_config
 from .models import db, bcrypt
@@ -11,6 +14,10 @@ from .views.TalentView import talent_api as talent_blueprint
 from .views.CompanyView import company_api as company_blueprint
 from .views.JobView import job_api as job_blueprint
 
+UPLOAD_FOLDER = 'static/uploads/'
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'mp4'}
+
+
 
 def create_app(env_name):
   """
@@ -19,6 +26,8 @@ def create_app(env_name):
   
   # app initiliazation
   app = Flask(__name__)
+  app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+  app.secret_key = "secret key"
 
   app.config.from_object(app_config[env_name])
   # initializing bcrypt and db

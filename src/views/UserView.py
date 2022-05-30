@@ -33,7 +33,7 @@ def create():
     else :
       user = UserModel(data)
       user.update(data)
-      return custom_response({'status': 'success'}, 201)    
+      return custom_response({'status': 'success'}, 200)    
     
   user = UserModel(data)
   user.save()
@@ -42,7 +42,7 @@ def create():
   print(ser_data.get('id'))
   # token = Auth.generate_token(ser_data.get('id'))
   # print(token)
-  return custom_response({'status': 'success'}, 201)
+  return custom_response({'status': 'success'}, 200)
 
 @user_api.route('/verify', methods=['POST'])
 def verify():
