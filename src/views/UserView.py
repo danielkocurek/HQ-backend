@@ -1,5 +1,6 @@
 #/src/views/UserView
 
+from random import randrange
 from flask import request, json, Response, Blueprint, g
 from marshmallow import ValidationError
 from ..models.UserModel import UserModel, UserSchema
@@ -68,6 +69,41 @@ def verify():
     message = {'error': 'Failed Verify code, Please check code in your email'}
     return custom_response(message, 400)
   update_user['register_status'] = True
+  print(update_user)
+
+  # setattr(data, key, item)
+  # user = UserModel(user_in_db)
+  user_in_db.update(update_user)
+  print("=======================")
+  print(update_user.get('id'))
+  token = Auth.generate_token(update_user.get('id'))
+  print(token)
+  return custom_response({'jwt_token': token}, 201)
+
+@user_api.route('/resend', methods=['POST'])
+def resend():
+  """
+  Create User Function
+  """
+  req_data = request.get_json()
+  try:
+    data = user_schema.load(req_data)
+  except ValidationError as error:
+    print("ERROR: package.json is invalid")
+    print(error.messages)
+    return custom_response(error, 400)
+  # if error:
+  #   return custom_response(error, 400)
+  
+  # check if user already exist in the db
+  user_in_db = UserModel.get_user_by_email(data.get('email'))
+  update_user = user_schema.dump(user_in_db)
+  print(update_user)
+  # for key, item in update_user.items():
+  # if user_schema.dump(user_in_db).get('verify_code') != data.get('verify_code'):
+  #   message = {'error': 'Failed Verify code, Please check code in your email'}
+  #   return custom_response(message, 400)
+  update_user['verify_code'] = randrange(1000,9999,4)
   print(update_user)
 
   # setattr(data, key, item)
