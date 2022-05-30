@@ -20,7 +20,7 @@ def create():
   company = CompanyModel(data)
   company.save()
   data = company_schema.dump(company)
-  return custom_response(data, 201)
+  return custom_response(data, 200)
 
 @company_api.route('/update/<int:id>', methods=['PUT'])
 @Auth.auth_required

@@ -86,7 +86,7 @@ def verify():
   print(update_user.get('id'))
   token = Auth.generate_token(update_user.get('id'))
   print(token)
-  return custom_response({'jwt_token': token}, 201)
+  return custom_response({'jwt_token': token,'id':update_user.get('id'),'email':update_user.get('email'),'type':update_user.get('type'), 'status':'success'}, 200)
 
 @user_api.route('/resend', methods=['POST'])
 def resend():
@@ -119,7 +119,7 @@ def resend():
   # setattr(data, key, item)
   # user = UserModel(user_in_db)
 
-  return custom_response({'statuse': 'success'}, 201)
+  return custom_response({'status': 'success'}, 200)
 
 @user_api.route('/', methods=['GET'])
 @Auth.auth_required
@@ -195,16 +195,20 @@ def login():
     return custom_response(error, 400)
   # if error:
   #   return custom_response(error, 400)
+  print(data)
   if not data.get('email') or not data.get('password'):
     return custom_response({'error': 'you need email and password to sign in'}, 400)
   user = UserModel.get_user_by_email(data.get('email'))
+  ser_data = user_schema.dump(user)
   if not user:
     return custom_response({'error': 'invalid credentials'}, 400)
   if not user.check_hash(data.get('password')):
     return custom_response({'error': 'invalid credentials'}, 400)
-  ser_data = user_schema.dump(user)
+  if ser_data.get('register_status') != True:
+    print("failed")
+    return custom_response({'error':'you did not verify with sms_code'},400)
   token = Auth.generate_token(ser_data.get('id'))
-  return custom_response({'jwt_token': token, "id":ser_data.get('id'), "email":ser_data.get('email'), "type":ser_data.get('type')}, 200)
+  return custom_response({'jwt_token': token, "id":ser_data.get('id'), "email":ser_data.get('email'), "type":ser_data.get('type'), 'status':'success'}, 200)
 
 def sms_code_send(sms_code, to_address):
   print(sms_code, to_address)

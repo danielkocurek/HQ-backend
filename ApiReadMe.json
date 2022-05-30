@@ -38,13 +38,30 @@
                 "method": "POST",
                 "Request_Data": {
                     "email": "//_required",
-                    "sms_code": "//_required",
+                    "verify_code": "//_required",
                     "password":"//_required",
                     "type":"//_required"
                 },
                 "Body_Data":{},
                 "Response_Date": {
-                    "jwt_token": ""
+                    "jwt_token": "",
+                    "id": "",
+                    "email": "",
+                    "type": ""
+                }
+            },
+            {
+                "Name": "Resend",
+                "Url": "/api/v1/users/resend",
+                "method": "POST",
+                "Request_Data": {
+                    "email": "//_required",
+                    "password":"//_required",
+                    "type":"//_required"
+                },
+                "Body_Data":{},
+                "Response_Date": {
+                    "status": ""
                 }
             },
             {

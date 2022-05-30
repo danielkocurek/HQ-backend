@@ -21,7 +21,8 @@ def create():
   post = TalentModel(data)
   post.save()
   data = talent_schema.dump(post)
-  return custom_response(data, 201)
+  data['status'] = 'success'
+  return custom_response(data, 200)
 
 @talent_api.route('/', methods=['GET'])
 def get_all():
