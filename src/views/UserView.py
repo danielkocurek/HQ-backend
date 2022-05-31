@@ -2,7 +2,7 @@
 
 from distutils.log import error
 from random import randrange
-from flask import request, json, Response, Blueprint, g
+from flask import request, json, Response, Blueprint, g, session
 from marshmallow import ValidationError
 from ..models.UserModel import UserModel, UserSchema
 from ..shared.Authentication import Auth
@@ -85,6 +85,7 @@ def verify():
   print("=======================")
   print(update_user.get('id'))
   token = Auth.generate_token(update_user.get('id'))
+  # session['username'] = update_user.get('id')
   print(token)
   return custom_response({'jwt_token': token,'id':update_user.get('id'),'email':update_user.get('email'),'type':update_user.get('type'), 'status':'success'}, 200)
 
@@ -208,6 +209,7 @@ def login():
     print("failed")
     return custom_response({'error':'you did not verify with sms_code'},400)
   token = Auth.generate_token(ser_data.get('id'))
+  # session['username'] = ser_data.get('id')
   return custom_response({'jwt_token': token, "id":ser_data.get('id'), "email":ser_data.get('email'), "type":ser_data.get('type'), 'status':'success'}, 200)
 
 def sms_code_send(sms_code, to_address):
@@ -232,6 +234,14 @@ def sms_code_send(sms_code, to_address):
   except Exception as ex:
     print("Something went wrong….",ex)  
     return custom_response(ex,400)
+
+# @user_api.route('/logout', method=['POST'])
+# @Auth.auth_required
+
+# def logout():
+#   if 'username' in session:
+#     session.pop('username', None)
+#   return custom_response({'status':'success'}, 200)
 
 def custom_response(res, status_code):
   """

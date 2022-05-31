@@ -2,7 +2,7 @@
 import jwt
 import os
 import datetime
-from flask import json, Response, request, g
+from flask import json, Response, request, g, session
 from functools import wraps
 from ..models.UserModel import UserModel
 
@@ -62,6 +62,12 @@ class Auth():
     @wraps(func)
     def decorated_auth(*args, **kwargs):
       print(request.headers)
+      # if 'username' not in session:
+      #   return Response(
+      #     mimetype="application/json",
+      #     response=json.dumps({'error': 'Authentication token is not available, please login to get one'}),
+      #     status=400
+      #   )            
       if 'api-token' not in request.headers:
         return Response(
           mimetype="application/json",
