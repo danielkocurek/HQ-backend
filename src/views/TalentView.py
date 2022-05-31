@@ -16,6 +16,10 @@ def create():
   req_data = request.get_json()
   print(req_data)
   data = talent_schema.load(req_data)
+  talent_in_db = TalentModel.get_talent_by_userid(data.get('user_id'))
+  if talent_in_db:
+    message = {'error': 'Talent already exist, please try another email address'}
+    return custom_response(message, 400)
   # if error:
   #   return custom_response(error, 400)
   post = TalentModel(data)

@@ -15,11 +15,16 @@ def create():
   """
   req_data = request.get_json()
   data = company_schema.load(req_data)
+  company_in_db = CompanyModel.get_company_by_userid(data.get('user_id'))
+  if company_in_db:
+    message = {'error': 'Company profile already exist, please try another email address'}
+    return custom_response(message, 400)    
   # if error:
   #   return custom_response(error, 400)
   company = CompanyModel(data)
   company.save()
   data = company_schema.dump(company)
+  data['status'] = 'success';
   return custom_response(data, 200)
 
 @company_api.route('/update/<int:id>', methods=['PUT'])

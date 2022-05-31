@@ -14,8 +14,8 @@ class CompanyModel(db.Model):
 
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String(128), nullable=False)
-  title = db.Column(db.String(128), nullable=False)
-  description = db.Column(db.String(128), nullable=False)
+  user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+  description = db.Column(db.String(128))
   region = db.Column(JSON)
   phone_number = db.Column(db.String(128), nullable=False)
   account_manager_name = db.Column(db.String(128), nullable=False)
@@ -27,7 +27,7 @@ class CompanyModel(db.Model):
     Class constructor
     """
     self.name = data.get('name')
-    self.title = data.get("title")
+    self.user_id = data.get("user_id")
     self.description = data.get("description")
     self.region = data.get("region")
     self.phone_number = data.get("phone_number")
@@ -57,9 +57,9 @@ class CompanyModel(db.Model):
   def get_company_by_id(id):
     return CompanyModel.query.get(id)
   
-  # @staticmethod
-  # def get_user_by_email(value):
-  #   return ProfileModel.query.filter_by(email=value).first()
+  @staticmethod
+  def get_company_by_userid(value):
+    return CompanyModel.query.filter_by(user_id=value).first()
 
   # def __generate_hash(self, password):
   #   return bcrypt.generate_password_hash(password, rounds=10).decode("utf-8")
@@ -73,8 +73,8 @@ class CompanyModel(db.Model):
 class CompanySchema(Schema):
   id = fields.Int(dump_only=True)
   name = fields.Str(required=True)
-  title = fields.Str(required=True)
-  description = fields.Str(required=True)
+  user_id = fields.Int(required=True)
+  description = fields.Str()
   phone_number = fields.Str(required=True)
   region = fields.Dict(keys=fields.Str(), values=fields.Str(), required = True)
   account_manager_name = fields.Str(required=True)

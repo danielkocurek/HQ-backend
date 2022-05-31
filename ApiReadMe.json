@@ -98,7 +98,8 @@
                     "region": {
                         "key": "//_required"
                     },
-                    "current_jobTitle": "//_required",
+                    "current_jobTitle": "",
+                    "company": "",
                     "current_jobDescription": "//_required"
                 },
                 "Body_Data":{
@@ -114,6 +115,8 @@
                         "key": "value"
                     },
                     "current_jobDescription": "",
+                    "company": "",
+                    "status":"",
                     "current_jobTitle": ""
                 }
             }
@@ -128,8 +131,8 @@
                 "method": "POST",
                 "Request_Data": {
                     "name": "//_required",
-                    "title": "//_required",
-                    "description": "//_required",
+                    "user_id": "//_required",
+                    "description": "",
                     "phone_number": "//_required",
                     "region": {
                         "city": "//_required",
@@ -143,13 +146,14 @@
                 "Response_Date": {
                     "id": "",
                     "name": "",
-                    "title": "",
+                    "user_id": "",
                     "description": "",
                     "phone_number": "",
                     "region": {
                         "city": "",
                         "country": ""
                     },
+                    "status":"",
                     "account_manager_name": ""
                 }
             },
