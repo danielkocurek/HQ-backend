@@ -1,5 +1,6 @@
 #/src/views/ProfileView.py
 
+from email import message
 from flask import request, json, Response, Blueprint, g
 from marshmallow import ValidationError
 from ..models.ProfileModel import *
@@ -21,6 +22,10 @@ def create():
     print("ERROR: package.json is invalid")
     print(error.messages)
     return custom_response(error, 400)
+  profile_in_db =  ProfileModel.get_profile_by_userid(data.get('user_id'))
+  if profile_in_db:
+    message = {'error':'The profile for you is already created, Please check again'}
+    return custom_response(message, 400)
     
   profile = ProfileModel(data)
   profile.save()
@@ -29,7 +34,8 @@ def create():
   print(ser_data.get('id'))
   # token = Auth.generate_token(ser_data.get('id'))
   # print(token)
-  return custom_response({'status': 'success'}, 200)
+  ser_data['status'] = 'success'
+  return custom_response(ser_data, 200)
 
  
 

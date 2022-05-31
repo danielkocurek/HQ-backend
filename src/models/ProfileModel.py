@@ -1,6 +1,8 @@
 # src/models/ProfileModel.py
 from marshmallow import fields, Schema
 import datetime
+from sqlalchemy.dialects.postgresql import ARRAY
+
 
 from . import db, bcrypt
 
@@ -12,10 +14,12 @@ class ProfileModel(db.Model):
   __tablename__ = 'profiles'
 
   id = db.Column(db.Integer, primary_key=True)
-  avator = db.Column(db.String(128), nullable=False)
-  resume = db.Column(db.String(128), nullable=False)
-  video = db.Column(db.String(128), nullable=False)
-  target_id = db.Column(db.Integer)
+  avator = db.Column(db.String(128))
+  resume = db.Column(db.String(128))
+  video_id = db.Column(db.Integer, db.ForeignKey('videos.id'))
+  user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+  job = db.Column(ARRAY(db.Integer))
+  work_history = db.Column(ARRAY(db.String(128)))
   type = db.Column(db.String(128))
 
   # class constructor
@@ -25,8 +29,10 @@ class ProfileModel(db.Model):
     """
     self.avator = data.get('avator')
     self.resume = data.get("resume")
-    self.video = data.get("video")
-    self.target_id = data.get("target_id")
+    self.video_id = data.get("video_id")
+    self.user_id = data.get("user_id")
+    self.job = data.get("job")
+    self.work_history = data.get("work_history")
     self.type = data.get('type')
 
   def save(self):
@@ -53,9 +59,9 @@ class ProfileModel(db.Model):
   # def get_one_user(id):
   #   return ProfileModel.query.get(id)
   
-  # @staticmethod
-  # def get_user_by_email(value):
-  #   return ProfileModel.query.filter_by(email=value).first()
+  @staticmethod
+  def get_profile_by_userid(value):
+    return ProfileModel.query.filter_by(user_id=value).first()
 
   # def __generate_hash(self, password):
   #   return bcrypt.generate_password_hash(password, rounds=10).decode("utf-8")
@@ -68,9 +74,11 @@ class ProfileModel(db.Model):
 
 class ProfileSchema(Schema):
   id = fields.Int(dump_only=True)
-  avator = fields.Str(required=True)
-  resume = fields.Str(required=True)
-  video = fields.Str(required=True)
-  target_id = fields.Int(required=True)
+  avator = fields.Str()
+  resume = fields.Str()
+  video_id = fields.Int()
+  job = fields.List(fields.Int())
+  user_id = fields.Int(required=True)
+  work_history = fields.List(fields.String())
   type = fields.Str(required=True)
 

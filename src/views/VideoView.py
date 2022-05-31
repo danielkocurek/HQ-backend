@@ -1,5 +1,6 @@
 #/src/views/VideoView.py
-from flask import redirect, request, Blueprint, json, Response, url_for
+from flask import g, redirect, request, Blueprint, json, Response, url_for
+from marshmallow import ValidationError
 from ..shared.Authentication import Auth
 from ..models.VideoModel import *
 from werkzeug.utils import secure_filename
@@ -30,9 +31,27 @@ def upload_file():
       if file and allowed_file(file.filename):
           filename = secure_filename(file.filename)
           print(os.path.join('src/static/uploads', filename))
-          file.save(os.path.join('src/static/uploads', filename))
-          return custom_response({'url': url_for('static', filename='uploads/' + filename)}, 200)
-  return custom_response({'url': url_for('static', filename='uploads/' + filename)}, 200)
+          file.save(os.path.join('src/static/uploads',  str(g.user.get('id')) + '_' + filename))
+          return custom_response({'url': url_for('static', filename='uploads/' + str(g.user.get('id')) + '_' + filename)}, 200)
+  return custom_response({'url': url_for('static', filename='uploads/' + filename), 'status':'success'}, 200)
+
+@video_api.route('/', methods=['POST'])
+@Auth.auth_required
+def create():
+  req_data = request.get_json()
+  try:
+    data = video_schema.load(req_data)
+  except ValidationError as error:
+    print(error.messages)
+    return custom_response(error,400)
+  video = VideoModel(data)
+  video.save()
+  res_data = video_schema.dump(video)
+  res_data['status'] = 'success'
+  return custom_response(res_data,200)
+  
+
+
           
 @video_api.route('/display/<filename>')
 # @Auth.auth_required

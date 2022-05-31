@@ -4,6 +4,7 @@ from turtle import title
 from marshmallow import fields, Schema
 import datetime
 
+from sqlalchemy.dialects.postgresql import ARRAY,JSON
 from . import db, bcrypt
 
 class VideoModel(db.Model):
@@ -14,11 +15,7 @@ class VideoModel(db.Model):
   __tablename__ = 'videos'
 
   id = db.Column(db.Integer, primary_key=True)
-  target_id = db.Column(db.Integer)
-  title = db.Column(db.String(128), nullable=False)
-  url = db.Column(db.String(128), nullable=False)
-  duration = db.Column(db.String(128), nullable=False)
-  sequence = db.Column(db.Integer, nullable=False)
+  v_data = db.Column(ARRAY(JSON), nullable=False)
   type = db.Column(db.String(128), nullable=False)
 
   # class constructor
@@ -26,11 +23,7 @@ class VideoModel(db.Model):
     """
     Class constructor
     """
-    self.title = data.get('title')
-    self.url = data.get("url")
-    self.target_id = data.get("target_id")
-    self.duration = data.get('duration')
-    self.sequence = data.get('sequence')
+    self.v_data = data.get('v_data')
     self.type = data.get('type')
 
   def save(self):
@@ -72,10 +65,6 @@ class VideoModel(db.Model):
 
 class VideoSchema(Schema):
   id = fields.Int(dump_only=True)
-  target_id = fields.Int(required=True)
-  title = fields.Str(required=True)
-  url = fields.Str(required=True)
-  duration = fields.Str(required=True)
-  sequence = fields.Int(required=True)
+  v_data = fields.List(fields.Dict(keys=fields.Str()), required=True)
   type = fields.Str(required=True)
 
