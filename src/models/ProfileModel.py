@@ -55,9 +55,9 @@ class ProfileModel(db.Model):
   # def get_all_users():
   #   return ProfileModel.query.all()
 
-  # @staticmethod
-  # def get_one_user(id):
-  #   return ProfileModel.query.get(id)
+  @staticmethod
+  def get_profile_by_id(id):
+    return ProfileModel.query.get(id)
   
   @staticmethod
   def get_profile_by_userid(value):

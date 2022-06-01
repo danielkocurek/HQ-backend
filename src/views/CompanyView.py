@@ -45,6 +45,7 @@ def update(id):
   company = CompanyModel.get_company_by_id(id)
   company.update(data)
   res_company = company_schema.dump(company)
+  res_company['status'] = 'success'
   return custom_response(res_company, 200)
 
 @company_api.route('/<int:id>')

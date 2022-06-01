@@ -57,11 +57,11 @@ class TalentModel(db.Model):
         db.session.commit()
 
     @staticmethod
-    def get_all_users():
+    def get_all_talent():
         return TalentModel.query.all()
 
     @staticmethod
-    def get_one_user(id):
+    def get_talent_by_id(id):
         return TalentModel.query.get(id)
     
     @staticmethod

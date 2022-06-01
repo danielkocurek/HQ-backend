@@ -49,7 +49,18 @@ def create():
   res_data = video_schema.dump(video)
   res_data['status'] = 'success'
   return custom_response(res_data,200)
-  
+
+@video_api.route('/update/<int:id>',methods=['PUT'])
+@Auth.auth_required
+def update(id):
+  req_data = request.get_json()
+  data = video_schema.load(req_data)
+  video = VideoModel.get_video(id)
+  video.update(data)
+  res_video = video_schema.dump(video)
+  res_video['status'] = 'success'
+  return custom_response(res_video,200)
+
 
 
           

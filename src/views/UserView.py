@@ -254,18 +254,19 @@ def get_a_user(user_id):
   return custom_response(ser_user, 200)
 
 
-@user_api.route('/me', methods=['PUT'])
+@user_api.route('/update/<int:id>', methods=['PUT'])
 @Auth.auth_required
-def update():
+def update(id):
   """
   Update me
   """
   req_data = request.get_json()
   data = user_schema.load(req_data, partial=True)
 
-  user = UserModel.get_one_user(g.user.get('id'))
+  user = UserModel.get_one_user(id)
   user.update(data)
   ser_user = user_schema.dump(user)
+  ser_user['status'] = 'success'
   return custom_response(ser_user, 200)
 
 @user_api.route('/me', methods=['DELETE'])
@@ -285,7 +286,8 @@ def get_me():
   Get me
   """
   user = UserModel.get_one_user(g.user.get('id'))
-  ser_user = user_schema.dump(user).data
+  ser_user = user_schema.dump(user)
+  ser_user['status'] = 'success'
   return custom_response(ser_user, 200)
 
 

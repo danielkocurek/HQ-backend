@@ -37,7 +37,19 @@ def update(id):
     job.update(data)
     
     res_job = job_schema.dump(job)
+    res_job['status'] = 'success'
     return custom_response(res_job, 200)
+
+@job_api.route('/<int:id>', methods = ['GET'])
+@Auth.auth_required
+def get_job(id):
+    job = JobModel.get_job_by_id(id)
+    if not job:
+        return custom_response({'error':'This job does not exist'},200)
+    res_job = job_schema.dump(job)
+    res_job['status'] = 'success'
+    return custom_response(res_job, 200)
+
 
 def custom_response(res, status_code):
     """

@@ -33,58 +33,54 @@ def get_all():
   """
   Get All Talents
   """
-  posts = TalentModel.get_all_blogposts()
-  data = talent_schema.dump(posts, many=True).data
+  posts = TalentModel.get_all_talent()
+  data = talent_schema.dump(posts, many=True)
+  data['status'] = 'success'
   return custom_response(data, 200)
 
-@talent_api.route('/<int:blogpost_id>', methods=['GET'])
-def get_one(blogpost_id):
+@talent_api.route('/<int:id>', methods=['GET'])
+@Auth.auth_required
+def get_one(id):
   """
   Get A Talent
   """
-  post = TalentModel.get_one_blogpost(blogpost_id)
-  if not post:
-    return custom_response({'error': 'post not found'}, 400)
-  data = talent_schema.dump(post).data
+  talent = TalentModel.get_talent_by_id(id)
+  if not talent:
+    return custom_response({'error': 'talent profile not found'}, 400)
+  data = talent_schema.dump(talent)
+  data['status'] = 'success'
   return custom_response(data, 200)
 
-@talent_api.route('/<int:blogpost_id>', methods=['PUT'])
+@talent_api.route('/update/<int:id>', methods=['PUT'])
 @Auth.auth_required
-def update(blogpost_id):
+def update(id):
   """
   Update A Talent
   """
   req_data = request.get_json()
-  post = TalentModel.get_one_blogpost(blogpost_id)
-  if not post:
-    return custom_response({'error': 'post not found'}, 400)
-  data = talent_schema.dump(post).data
-  if data.get('owner_id') != g.user.get('id'):
-    return custom_response({'error': 'permission denied'}, 400)
+  talent = TalentModel.get_talent_by_id(id)
+  if not talent:
+    return custom_response({'error': 'talent profile not found'}, 400)
+  data = talent_schema.load(req_data, partial=True)
+  talent.update(data)
   
-  data, error = talent_schema.load(req_data, partial=True)
-  if error:
-    return custom_response(error, 400)
-  post.update(data)
-  
-  data = talent_schema.dump(post).data
-  return custom_response(data, 200)
+  res_data = talent_schema.dump(talent)
+  res_data['status'] = 'success'
+  return custom_response(res_data, 200)
 
-@talent_api.route('/<int:blogpost_id>', methods=['DELETE'])
+@talent_api.route('/<int:id>', methods=['DELETE'])
 @Auth.auth_required
-def delete(blogpost_id):
+def delete(id):
   """
   Delete A Talent
   """
-  post = TalentModel.get_one_blogpost(blogpost_id)
-  if not post:
-    return custom_response({'error': 'post not found'}, 400)
-  data = talent_schema.dump(post).data
-  if data.get('owner_id') != g.user.get('id'):
-    return custom_response({'error': 'permission denied'}, 400)
+  talent = TalentModel.get_talent_by_id(id)
+  if not talent:
+    return custom_response({'error': 'talent not found'}, 400)
+  data = talent_schema.dump(talent)
 
-  post.delete()
-  return custom_response({'message': 'deleted'}, 204)
+  talent.delete()
+  return custom_response({'message': 'deleted', 'status':'success'}, 200)
   
 
 def custom_response(res, status_code):

@@ -37,6 +37,32 @@ def create():
   ser_data['status'] = 'success'
   return custom_response(ser_data, 200)
 
+@profile_api.route('/update/<int:id>', methods=['PUT'])
+@Auth.auth_required
+def update(id):
+  req_data = request.get_json()
+  try:
+    data = profile_schema.load(req_data)
+  except ValidationError as error:
+    print("ERROR: package.json is invalid")
+    print(error.messages)
+    return custom_response(error, 400)
+  profile = ProfileModel.get_profile_by_id(id)
+  profile.update(data)
+  res_profile = profile_schema.dump(profile)
+  res_profile['status'] = 'success'
+  return custom_response(res_profile,200)
+
+@profile_api.route('/<int:id>', methods=['GET'])
+@Auth.auth_required
+def get_profile(id):
+  profile = ProfileModel.get_profile_by_userid(id)
+  if not profile:
+    return custom_response({"error":"This profile does not exist"},400)
+  res_profile = profile_schema.dump(profile)
+  res_profile['status'] = 'success'
+  return custom_response(res_profile, 200)     
+
  
 
 def custom_response(res, status_code):
