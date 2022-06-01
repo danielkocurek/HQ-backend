@@ -19,7 +19,8 @@ def create():
     job = JobModel(data)
     job.save()
     data = job_schema.dump(job)
-    return custom_response(data, 201)
+    data['status'] = 'success'
+    return custom_response(data, 200)
 
 @job_api.route('/update/<int:id>', methods=['PUT'])
 @Auth.auth_required

@@ -5,6 +5,10 @@ from random import randrange
 from flask import request, json, Response, Blueprint, g, session
 from marshmallow import ValidationError
 from ..models.UserModel import UserModel, UserSchema
+from ..models.TalentModel import *
+from ..models.ProfileModel import *
+from ..models.CompanyModel import *
+from ..models.VideoModel import *
 from ..shared.Authentication import Auth
 import smtplib
 
@@ -122,15 +126,73 @@ def resend():
 
   return custom_response({'status': 'success'}, 200)
 
-@user_api.route('/', methods=['GET'])
-@Auth.auth_required
-def get_all():
+@user_api.route('/talent_all', methods=['GET'])
+def get_talent_all():
   """
   Get all users
   """
   users = UserModel.get_all_users()
   ser_users = user_schema.dump(users, many=True).data
-  return custom_response(ser_users, 200)
+  res_talent_data = []
+  for ser_user in ser_users:
+    if (ser_user.get('type') == 'talent'):
+      talent = TalentModel.get_talent_by_userid(ser_user.get('id'))
+      profile = ProfileModel.get_profile_by_userid(ser_user.get('id'))
+      video = VideoModel.get_video(ProfileSchema().dump(profile).get('video_id'))
+
+      talent_data = TalentSchema().dump(talent)
+      talent_data.pop('id')
+      talent_data.pop('user_id')
+
+      profile_data = ProfileSchema().dump(profile)
+      profile_data.pop('id')
+      profile_data.pop('user_id')
+
+      video_data = VideoSchema().dump(video)
+      video_data.pop('id')
+      video_data.pop('type')
+
+      ser_user.update(talent_data)
+      ser_user.update(profile_data)
+      ser_user.update(video_data)
+      ser_user['status'] = 'success'
+      ser_user.pop('verify_code')
+      res_talent_data.push(ser_user)      
+  return custom_response(res_talent_data, 200)
+
+@user_api.route('/company_all', methods=['GET'])
+def get_company_all():
+  """
+  Get all users
+  """
+  users = UserModel.get_all_users()
+  ser_users = user_schema.dump(users, many=True).data
+  res_company_data = []
+  for ser_user in ser_users:
+    if (ser_user.get('type') == 'company'):
+      company = CompanyModel.get_company_by_userid(ser_user.get('id'))
+      profile = ProfileModel.get_profile_by_userid(ser_user.get('id'))
+      video = VideoModel.get_video(ProfileSchema().dump(profile).get('video_id'))
+
+      company_data = CompanySchema().dump(company)
+      company_data.pop('id')
+      company_data.pop('user_id')
+
+      profile_data = ProfileSchema().dump(profile)
+      profile_data.pop('id')
+      profile_data.pop('user_id')
+
+      video_data = VideoSchema().dump(video)
+      video_data.pop('id')
+      video_data.pop('type')
+
+      ser_user.update(company_data)
+      ser_user.update(profile_data)
+      ser_user.update(video_data)
+      ser_user['status'] = 'success'
+      ser_user.pop('verify_code')
+      res_company_data.push(ser_user)
+  return custom_response(res_company_data, 200)
 
 @user_api.route('/<int:user_id>', methods=['GET'])
 @Auth.auth_required
@@ -139,11 +201,58 @@ def get_a_user(user_id):
   Get a single user
   """
   user = UserModel.get_one_user(user_id)
-  if not user:
-    return custom_response({'error': 'user not found'}, 404)
   
-  ser_user = user_schema.dump(user).data
+  if not user:
+    return custom_response({'error': 'user not found'}, 400)
+  
+  ser_user = user_schema.dump(user)
+  print(ser_user)
+  if (ser_user.get('type') == 'company'):
+    company = CompanyModel.get_company_by_userid(user_id)
+    profile = ProfileModel.get_profile_by_userid(user_id)
+    video = VideoModel.get_video(ProfileSchema().dump(profile).get('video_id'))
+
+    company_data = CompanySchema().dump(company)
+    company_data.pop('id')
+    company_data.pop('user_id')
+
+    profile_data = ProfileSchema().dump(profile)
+    profile_data.pop('id')
+    profile_data.pop('user_id')
+
+    video_data = VideoSchema().dump(video)
+    video_data.pop('id')
+    video_data.pop('type')
+
+    ser_user.update(company_data)
+    ser_user.update(profile_data)
+    ser_user.update(video_data)
+    ser_user['status'] = 'success'
+    ser_user.pop('verify_code')
+  if (ser_user.get('type') == 'talent'):
+    talent = TalentModel.get_talent_by_userid(user_id)
+    profile = ProfileModel.get_profile_by_userid(user_id)
+    video = VideoModel.get_video(ProfileSchema().dump(profile).get('video_id'))
+
+    talent_data = TalentSchema().dump(talent)
+    talent_data.pop('id')
+    talent_data.pop('user_id')
+
+    profile_data = ProfileSchema().dump(profile)
+    profile_data.pop('id')
+    profile_data.pop('user_id')
+
+    video_data = VideoSchema().dump(video)
+    video_data.pop('id')
+    video_data.pop('type')
+
+    ser_user.update(company_data)
+    ser_user.update(profile_data)
+    ser_user.update(video_data)
+    ser_user['status'] = 'success'
+    ser_user.pop('verify_code')
   return custom_response(ser_user, 200)
+
 
 @user_api.route('/me', methods=['PUT'])
 @Auth.auth_required

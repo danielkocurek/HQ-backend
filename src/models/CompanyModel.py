@@ -17,7 +17,7 @@ class CompanyModel(db.Model):
   user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
   description = db.Column(db.String(128))
   region = db.Column(JSON)
-  phone_number = db.Column(db.String(128), nullable=False)
+  phone_number = db.Column(JSON)
   account_manager_name = db.Column(db.String(128), nullable=False)
   
 
@@ -49,9 +49,9 @@ class CompanyModel(db.Model):
     db.session.delete(self)
     db.session.commit()
 
-  # @staticmethod
-  # def get_all_users():
-  #   return ProfileModel.query.all()
+  @staticmethod
+  def get_all_companies():
+    return CompanyModel.query.all()
 
   @staticmethod
   def get_company_by_id(id):
@@ -75,7 +75,7 @@ class CompanySchema(Schema):
   name = fields.Str(required=True)
   user_id = fields.Int(required=True)
   description = fields.Str()
-  phone_number = fields.Str(required=True)
+  phone_number = fields.Dict(keys=fields.Str(), values=fields.Str())
   region = fields.Dict(keys=fields.Str(), values=fields.Str(), required = True)
   account_manager_name = fields.Str(required=True)
 

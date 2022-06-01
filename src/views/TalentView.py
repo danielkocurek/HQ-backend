@@ -44,7 +44,7 @@ def get_one(blogpost_id):
   """
   post = TalentModel.get_one_blogpost(blogpost_id)
   if not post:
-    return custom_response({'error': 'post not found'}, 404)
+    return custom_response({'error': 'post not found'}, 400)
   data = talent_schema.dump(post).data
   return custom_response(data, 200)
 
@@ -57,7 +57,7 @@ def update(blogpost_id):
   req_data = request.get_json()
   post = TalentModel.get_one_blogpost(blogpost_id)
   if not post:
-    return custom_response({'error': 'post not found'}, 404)
+    return custom_response({'error': 'post not found'}, 400)
   data = talent_schema.dump(post).data
   if data.get('owner_id') != g.user.get('id'):
     return custom_response({'error': 'permission denied'}, 400)
@@ -78,7 +78,7 @@ def delete(blogpost_id):
   """
   post = TalentModel.get_one_blogpost(blogpost_id)
   if not post:
-    return custom_response({'error': 'post not found'}, 404)
+    return custom_response({'error': 'post not found'}, 400)
   data = talent_schema.dump(post).data
   if data.get('owner_id') != g.user.get('id'):
     return custom_response({'error': 'permission denied'}, 400)

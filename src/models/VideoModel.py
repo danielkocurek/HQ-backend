@@ -46,9 +46,9 @@ class VideoModel(db.Model):
   # def get_all_users():
   #   return ProfileModel.query.all()
 
-  # @staticmethod
-  # def get_one_user(id):
-  #   return ProfileModel.query.get(id)
+  @staticmethod
+  def get_video(id):
+    return VideoModel.query.get(id)
   
   # @staticmethod
   # def get_user_by_email(value):
