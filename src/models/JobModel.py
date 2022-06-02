@@ -20,6 +20,11 @@ class JobModel(db.Model):
   education = db.Column(db.String(128), nullable=False)
   salary = db.Column(db.String(128))
   department = db.Column(db.String(128), nullable=False)
+  created_at = db.Column(db.DateTime)
+  modified_at = db.Column(db.DateTime)
+  description = db.Column(db.Text)
+  job_status = db.Column(db.String(128))
+  company_id = db.Column(db.Integer, db.ForeignKey('companies.id'), nullable=False)
   roles = db.Column(ARRAY(db.String(128)), nullable=False)
 
   
@@ -35,6 +40,11 @@ class JobModel(db.Model):
     self.education = data.get("education")
     self.salary = data.get("salary")
     self.department = data.get("department")
+    self.description = data.get("description")
+    self.created_at = datetime.datetime.utcnow()
+    self.modified_at = datetime.datetime.utcnow()
+    self.job_status = "hiring"
+    self.company_id = data.get('company_id')
     self.roles = data.get("roles")
     
   def save(self):
@@ -56,6 +66,15 @@ class JobModel(db.Model):
   @staticmethod
   def get_job_by_id(id):
     return JobModel.query.get(id)
+  
+  @staticmethod
+  def get_all_job_by_companyid(id):
+    return JobModel.query.filter_by(company_id=id)
+  
+  @staticmethod
+  def get_all_jobs():
+    return JobModel.query.all()  
+  
 class JobSchema(Schema):
   id = fields.Int(dump_only=True)
   title = fields.Str(required=True)
@@ -64,5 +83,10 @@ class JobSchema(Schema):
   education = fields.Str(required=True)
   salary = fields.Str()
   department = fields.Str(required=True)
+  description = fields.Str()
+  created_at = fields.DateTime(dump_only=True)
+  modified_at = fields.DateTime(dump_only=True)
+  job_status =  fields.Str() 
+  company_id = fields.Int(required=True)
   roles = fields.List(fields.String(), required=True)
 

@@ -5,7 +5,7 @@ from ..shared.Authentication import Auth
 from ..models.VideoModel import *
 from werkzeug.utils import secure_filename
 import os
-
+import datetime
 video_api = Blueprint('video_api', __name__)
 video_schema = VideoSchema()
 
@@ -31,9 +31,10 @@ def upload_file():
       if file and allowed_file(file.filename):
           filename = secure_filename(file.filename)
           print(os.path.join('src/static/uploads', filename))
-          file.save(os.path.join('src/static/uploads',  str(g.user.get('id')) + '_' + filename))
-          return custom_response({'url': url_for('static', filename='uploads/' + str(g.user.get('id')) + '_' + filename)}, 200)
-  return custom_response({'url': url_for('static', filename='uploads/' + filename), 'status':'success'}, 200)
+          ts = datetime.datetime.now().timestamp()
+          file.save(os.path.join('src/static/uploads',  str(g.user.get('id')) + '_' + str(ts).split('.')[0] + "_" + filename))
+          return custom_response({'url': url_for('static', filename='uploads/' + str(g.user.get('id')) + '_' + str(ts).split('.')[0] + "_" + filename), 'status':'success'}, 200)
+  return custom_response({'url': url_for('static', str(g.user.get('id')) + '_' + str(ts).split('.')[0] + "_" + filename), 'status':'success'}, 200)
 
 @video_api.route('/', methods=['POST'])
 @Auth.auth_required

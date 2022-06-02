@@ -132,32 +132,35 @@ def get_talent_all():
   Get all users
   """
   users = UserModel.get_all_users()
-  ser_users = user_schema.dump(users, many=True).data
+  ser_users = user_schema.dump(users, many=True)
   res_talent_data = []
   for ser_user in ser_users:
     if (ser_user.get('type') == 'talent'):
       talent = TalentModel.get_talent_by_userid(ser_user.get('id'))
       profile = ProfileModel.get_profile_by_userid(ser_user.get('id'))
       video = VideoModel.get_video(ProfileSchema().dump(profile).get('video_id'))
+      
+      if talent:
+        talent_data = TalentSchema().dump(talent)
+        talent_data.pop('id')
+        talent_data.pop('user_id')
+        ser_user.update(talent_data)
 
-      talent_data = TalentSchema().dump(talent)
-      talent_data.pop('id')
-      talent_data.pop('user_id')
+      if profile:
+        profile_data = ProfileSchema().dump(profile)
+        profile_data.pop('id')
+        profile_data.pop('user_id')
+        ser_user.update(profile_data)
 
-      profile_data = ProfileSchema().dump(profile)
-      profile_data.pop('id')
-      profile_data.pop('user_id')
+      if video:
+        video_data = VideoSchema().dump(video)
+        video_data.pop('id')
+        video_data.pop('type')
+        ser_user.update(video_data)
 
-      video_data = VideoSchema().dump(video)
-      video_data.pop('id')
-      video_data.pop('type')
-
-      ser_user.update(talent_data)
-      ser_user.update(profile_data)
-      ser_user.update(video_data)
       ser_user['status'] = 'success'
       ser_user.pop('verify_code')
-      res_talent_data.push(ser_user)      
+      res_talent_data.append(ser_user)      
   return custom_response(res_talent_data, 200)
 
 @user_api.route('/company_all', methods=['GET'])
@@ -166,7 +169,7 @@ def get_company_all():
   Get all users
   """
   users = UserModel.get_all_users()
-  ser_users = user_schema.dump(users, many=True).data
+  ser_users = user_schema.dump(users, many=True)
   res_company_data = []
   for ser_user in ser_users:
     if (ser_user.get('type') == 'company'):
@@ -174,24 +177,27 @@ def get_company_all():
       profile = ProfileModel.get_profile_by_userid(ser_user.get('id'))
       video = VideoModel.get_video(ProfileSchema().dump(profile).get('video_id'))
 
-      company_data = CompanySchema().dump(company)
-      company_data.pop('id')
-      company_data.pop('user_id')
+      if company:
+        company_data = CompanySchema().dump(company)
+        company_data.pop('id')
+        company_data.pop('user_id')
+        ser_user.update(company_data)
 
-      profile_data = ProfileSchema().dump(profile)
-      profile_data.pop('id')
-      profile_data.pop('user_id')
+      if profile:
+        profile_data = ProfileSchema().dump(profile)
+        profile_data.pop('id')
+        profile_data.pop('user_id')
+        ser_user.update(profile_data)
 
-      video_data = VideoSchema().dump(video)
-      video_data.pop('id')
-      video_data.pop('type')
+      if video:
+        video_data = VideoSchema().dump(video)
+        video_data.pop('id')
+        video_data.pop('type')
+        ser_user.update(video_data)
 
-      ser_user.update(company_data)
-      ser_user.update(profile_data)
-      ser_user.update(video_data)
       ser_user['status'] = 'success'
       ser_user.pop('verify_code')
-      res_company_data.push(ser_user)
+      res_company_data.append(ser_user)
   return custom_response(res_company_data, 200)
 
 @user_api.route('/<int:user_id>', methods=['GET'])
