@@ -1,4 +1,5 @@
 #/src/views/JobView.py
+from xml.dom import ValidationErr
 from flask import request, g, Blueprint, json, Response
 
 from ..shared.CustomService import custom_response
@@ -46,7 +47,7 @@ def update(id):
 def get_job(id):
     job = JobModel.get_job_by_id(id)
     if not job:
-        return custom_response({'error':'This job does not exist'},200)
+        return custom_response({'error':'This job does not exist'},400)
     res_job = job_schema.dump(job)
     res_job['status'] = 'success'
     return custom_response(res_job, 200)
@@ -57,9 +58,31 @@ def get_jobs_by_companyid(id):
     jobs = JobModel.get_all_job_by_companyid(id)
     if not jobs:
         return custom_response({'error':'This company did not post any jobs'},400)
-    res_jobs = job_schema.dump(jobs, many=True)
+    data_jobs = job_schema.dump(jobs, many=True)
+    res_jobs = []
+    for job in data_jobs:
+        company_id = job.get('company_id')
+        job['company_logo'] = JobModel.get_companylogo(company_id)
+        res_jobs.append(job)
     # res_job = job_schema.dump(job)
     # res_job['status'] = 'success'
+    return custom_response(res_jobs, 200)
+
+@job_api.route('/pages/<int:page_num>', methods = ['GET'])
+def get_jobs_by_page_num(page_num):
+    try:
+        jobs = JobModel.get_all_jobs_by_pagination(page_num)
+    except ValidationErr as error:
+        print(error.messages)
+        return custom_response(error,400)
+    if not jobs:
+        return custom_response({'error':'This company did not post any jobs'},400)
+    data_jobs = job_schema.dump(jobs.items, many=True)
+    res_jobs = []
+    for job in data_jobs:
+        company_id = job.get('company_id')
+        job['company_logo'] = JobModel.get_companylogo(company_id)
+        res_jobs.append(job)
     return custom_response(res_jobs, 200)
 
 

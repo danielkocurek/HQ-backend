@@ -93,6 +93,10 @@ class UserModel(db.Model):
   @staticmethod
   def get_user_by_email(value):
     return UserModel.query.filter_by(email=value).first()
+  
+  @staticmethod
+  def get_talents_by_page_num(page_num):
+    return UserModel.query.filter_by(type='talent').paginate(per_page=5, page=page_num, error_out=True)
 
   def __generate_hash(self, password):
     return bcrypt.generate_password_hash(password, rounds=10).decode("utf-8")

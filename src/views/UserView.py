@@ -297,6 +297,21 @@ def get_me():
   ser_user['status'] = 'success'
   return custom_response(ser_user, 200)
 
+@user_api.route('/talents/<int:page_num>', methods=['GET'])
+def get_talents_by_page_num(page_num):
+  print(UserModel.get_talents_by_page_num(page_num))
+  try:
+    talents = UserModel.get_talents_by_page_num(page_num)
+  except ValidationError as error:
+    print('failed')
+    print(error.messages)
+    return custom_response(error,400)
+  if not talents:
+    return custom_response({'error':'There is not any talents'},400 )
+  res_data = user_schema.dump(talents.items, many=True)
+  return custom_response(res_data, 200)
+  
+
 
 @user_api.route('/login', methods=['POST'])
 def login():

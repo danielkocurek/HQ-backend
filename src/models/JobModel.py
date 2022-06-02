@@ -3,6 +3,8 @@ from marshmallow import fields, Schema
 from sqlalchemy import JSON
 from sqlalchemy.dialects.postgresql import ARRAY
 import datetime
+from .ProfileModel import ProfileModel
+from .CompanyModel import CompanyModel 
 
 from . import db, bcrypt
 
@@ -73,7 +75,17 @@ class JobModel(db.Model):
   
   @staticmethod
   def get_all_jobs():
-    return JobModel.query.all()  
+    return JobModel.query.all()
+  
+  @staticmethod
+  def get_all_jobs_by_pagination(page_num):
+    return JobModel.query.paginate(per_page=5, page=page_num, error_out=True)  
+  
+  @staticmethod
+  def get_companylogo(id):
+    user_id = CompanyModel.query.get(id).user_id
+    print(ProfileModel.query.filter_by(user_id=user_id).first().avator)
+    return ProfileModel.query.filter_by(user_id=user_id).first().avator
   
 class JobSchema(Schema):
   id = fields.Int(dump_only=True)
