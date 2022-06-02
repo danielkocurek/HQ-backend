@@ -78,14 +78,19 @@ class JobModel(db.Model):
     return JobModel.query.all()
   
   @staticmethod
-  def get_all_jobs_by_pagination(page_num):
-    return JobModel.query.paginate(per_page=5, page=page_num, error_out=True)  
+  def get_all_jobs_by_pagination(page_num, page_length):
+    return JobModel.query.paginate(per_page=page_length, page=page_num, error_out=True)  
   
   @staticmethod
   def get_companylogo(id):
     user_id = CompanyModel.query.get(id).user_id
     print(ProfileModel.query.filter_by(user_id=user_id).first().avator)
     return ProfileModel.query.filter_by(user_id=user_id).first().avator
+  
+  
+  @staticmethod
+  def get_companyname(id):
+    return CompanyModel.query.get(id).name
   
 class JobSchema(Schema):
   id = fields.Int(dump_only=True)

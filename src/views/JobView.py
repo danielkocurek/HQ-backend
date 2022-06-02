@@ -49,6 +49,8 @@ def get_job(id):
     if not job:
         return custom_response({'error':'This job does not exist'},400)
     res_job = job_schema.dump(job)
+    res_job['company_logo'] = JobModel.get_companylogo(res_job['company_id'])
+    res_job['company_name'] = JobModel.get_companyname(res_job['company_id'])
     res_job['status'] = 'success'
     return custom_response(res_job, 200)
 
@@ -63,15 +65,16 @@ def get_jobs_by_companyid(id):
     for job in data_jobs:
         company_id = job.get('company_id')
         job['company_logo'] = JobModel.get_companylogo(company_id)
+        job['company_name'] = JobModel.get_companyname(company_id)
         res_jobs.append(job)
     # res_job = job_schema.dump(job)
     # res_job['status'] = 'success'
     return custom_response(res_jobs, 200)
 
-@job_api.route('/pages/<int:page_num>', methods = ['GET'])
-def get_jobs_by_page_num(page_num):
+@job_api.route('/pages/<int:page_num>/<int:page_length>', methods = ['GET'])
+def get_jobs_by_page_num(page_num, page_length):
     try:
-        jobs = JobModel.get_all_jobs_by_pagination(page_num)
+        jobs = JobModel.get_all_jobs_by_pagination(page_num, page_length)
     except ValidationErr as error:
         print(error.messages)
         return custom_response(error,400)
@@ -82,6 +85,7 @@ def get_jobs_by_page_num(page_num):
     for job in data_jobs:
         company_id = job.get('company_id')
         job['company_logo'] = JobModel.get_companylogo(company_id)
+        job['company_name'] = JobModel.get_companyname(company_id)
         res_jobs.append(job)
     return custom_response(res_jobs, 200)
 
