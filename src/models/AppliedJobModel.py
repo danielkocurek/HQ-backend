@@ -12,9 +12,9 @@ class AppliedJobModel(db.Model):
   __tablename__ = 'appliedjobs'
 
   id = db.Column(db.Integer, primary_key=True)
-  job_id = db.Column(db.Integer, nullable=False)
+  job_id = db.Column(db.Integer, db.ForeignKey('jobs.id'), nullable=False)
+  talent_id = db.Column(db.Integer, db.ForeignKey('talents.id'), nullable=False)
   applied_at = db.Column(db.DateTime, nullable=False)
-  on_shortlist = db.Column(db.Boolean, nullable=False)
 
   # class constructor
   def __init__(self, data):
@@ -22,20 +22,15 @@ class AppliedJobModel(db.Model):
     Class constructor
     """
     self.job_id = data.get('job_id')
-    self.applied_at = data.get("applied_at")
-    self.on_shortlist = data.get("on_shortlist")
+    self.talent_id = data.get('talent_id')
+    self.applied_at = datetime.datetime.utcnow()
 
   def save(self):
     db.session.add(self)
     db.session.commit()
 
-  # def update(self, data):
-  #   for key, item in data.items():
-  #     if key == 'password':
-  #       self.password = self.__generate_hash(item)
-  #     setattr(self, key, item)
-  #   self.modified_at = datetime.datetime.utcnow()
-  #   db.session.commit()
+  def update(self, data):
+    db.session.commit()
 
   def delete(self):
     db.session.delete(self)
@@ -48,7 +43,13 @@ class AppliedJobModel(db.Model):
   # @staticmethod
   # def get_one_user(id):
   #   return ProfileModel.query.get(id)
+  @staticmethod
+  def get_talents_by_jobid(value):
+    return AppliedJobModel.query.filter_by(job_id=value)
   
+  @staticmethod
+  def get_jobs_by_talentid(value):
+    return AppliedJobModel.query.filter_by(talent_id=value)
   # @staticmethod
   # def get_user_by_email(value):
   #   return ProfileModel.query.filter_by(email=value).first()
@@ -65,6 +66,6 @@ class AppliedJobModel(db.Model):
 class AppliedJobSchema(Schema):
   id = fields.Int(dump_only=True)
   job_id = fields.Int(required=True)
+  talent_id = fields.Int(required=True)
   applied_at = fields.DateTime(required=True)
-  on_shortlist = fields.Boolean(required=True)
 

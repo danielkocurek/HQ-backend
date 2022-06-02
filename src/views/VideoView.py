@@ -1,6 +1,7 @@
 #/src/views/VideoView.py
 from flask import g, redirect, request, Blueprint, json, Response, url_for
 from marshmallow import ValidationError
+from ..shared.CustomService import custom_response
 from ..shared.Authentication import Auth
 from ..models.VideoModel import *
 from werkzeug.utils import secure_filename
@@ -71,14 +72,4 @@ def display_video(filename):
   #print('display_video filename: ' + filename)
   return redirect(url_for('static', filename='uploads/' + filename), code=301)
 
-
-def custom_response(res, status_code):
-  """
-  Custom Response Function
-  """
-  return Response(
-    mimetype="application/json",
-    response=json.dumps(res),
-    status=status_code
-  )
 

@@ -1,6 +1,8 @@
 #/src/views/CompanyView.py
 from flask import request, Blueprint, json, Response
 from marshmallow import ValidationError
+
+from ..shared.CustomService import custom_response
 from ..shared.Authentication import Auth
 from ..models.CompanyModel import *
 
@@ -91,14 +93,4 @@ def get_all_company():
   res_data = company_schema.dump(company, many=True)
   # res_data['status'] = 'success'
   return custom_response({'res_data':res_data, 'status':'success'}, 200)
-
-def custom_response(res, status_code):
-  """
-  Custom Response Function
-  """
-  return Response(
-    mimetype="application/json",
-    response=json.dumps(res),
-    status=status_code
-  )
 

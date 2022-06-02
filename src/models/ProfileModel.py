@@ -14,9 +14,10 @@ class ProfileModel(db.Model):
   __tablename__ = 'profiles'
 
   id = db.Column(db.Integer, primary_key=True)
-  avator = db.Column(db.String(128))
-  resume = db.Column(db.String(128))
+  avator = db.Column(db.String(256))
+  resume = db.Column(db.String(256))
   video_id = db.Column(db.Integer, db.ForeignKey('videos.id'))
+  video = db.Column(db.String(256))
   user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
   job = db.Column(ARRAY(db.Integer))
   work_history = db.Column(ARRAY(db.String(128)))
@@ -30,6 +31,7 @@ class ProfileModel(db.Model):
     self.avator = data.get('avator')
     self.resume = data.get("resume")
     self.video_id = data.get("video_id")
+    self.video = data.get('video')
     self.user_id = data.get("user_id")
     self.job = data.get("job")
     self.work_history = data.get("work_history")
@@ -74,6 +76,7 @@ class ProfileSchema(Schema):
   avator = fields.Str()
   resume = fields.Str()
   video_id = fields.Int()
+  video = fields.Str()
   job = fields.List(fields.Int())
   user_id = fields.Int(required=True)
   work_history = fields.List(fields.String())

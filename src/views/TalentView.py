@@ -1,5 +1,7 @@
 #/src/views/BlogpostView.py
 from flask import request, g, Blueprint, json, Response
+
+from ..shared.CustomService import custom_response
 from ..shared.Authentication import Auth
 from ..models.TalentModel import TalentModel, TalentSchema
 
@@ -83,13 +85,4 @@ def delete(id):
   return custom_response({'message': 'deleted', 'status':'success'}, 200)
   
 
-def custom_response(res, status_code):
-  """
-  Custom Response Function
-  """
-  return Response(
-    mimetype="application/json",
-    response=json.dumps(res),
-    status=status_code
-  )
 

@@ -3,6 +3,8 @@
 from email import message
 from flask import request, json, Response, Blueprint, g
 from marshmallow import ValidationError
+
+from ..shared.CustomService import custom_response
 from ..models.ProfileModel import *
 from ..shared.Authentication import Auth
 
@@ -63,14 +65,3 @@ def get_profile(id):
   res_profile['status'] = 'success'
   return custom_response(res_profile, 200)     
 
- 
-
-def custom_response(res, status_code):
-  """
-  Custom Response Function
-  """
-  return Response(
-    mimetype="application/json",
-    response=json.dumps(res),
-    status=status_code
-  )

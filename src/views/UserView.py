@@ -10,6 +10,7 @@ from ..models.ProfileModel import *
 from ..models.CompanyModel import *
 from ..models.VideoModel import *
 from ..shared.Authentication import Auth
+from ..shared.CustomService import custom_response
 import smtplib
 
 user_api = Blueprint('user_api', __name__)
@@ -360,12 +361,3 @@ def sms_code_send(sms_code, to_address):
 #     session.pop('username', None)
 #   return custom_response({'status':'success'}, 200)
 
-def custom_response(res, status_code):
-  """
-  Custom Response Function
-  """
-  return Response(
-    mimetype="application/json",
-    response=json.dumps(res),
-    status=status_code
-  )

@@ -12,8 +12,8 @@ class JobShortlistModel(db.Model):
   __tablename__ = 'jobshortlists'
 
   id = db.Column(db.Integer, primary_key=True)
-  talent_id = db.Column(db.Integer, nullable=False)
-  job_id = db.Column(db.Integer, nullable=False)
+  talent_id = db.Column(db.Integer, db.ForeignKey('talents.id'), nullable=False)
+  job_id = db.Column(db.Integer, db.ForeignKey('jobs.id'), nullable=False)
 
   # class constructor
   def __init__(self, data):
@@ -27,13 +27,8 @@ class JobShortlistModel(db.Model):
     db.session.add(self)
     db.session.commit()
 
-  # def update(self, data):
-  #   for key, item in data.items():
-  #     if key == 'password':
-  #       self.password = self.__generate_hash(item)
-  #     setattr(self, key, item)
-  #   self.modified_at = datetime.datetime.utcnow()
-  #   db.session.commit()
+  def update(self, data):
+    db.session.commit()
 
   def delete(self):
     db.session.delete(self)
@@ -47,10 +42,13 @@ class JobShortlistModel(db.Model):
   # def get_one_user(id):
   #   return ProfileModel.query.get(id)
   
-  # @staticmethod
-  # def get_user_by_email(value):
-  #   return ProfileModel.query.filter_by(email=value).first()
-
+  @staticmethod
+  def get_talents_by_jobid(value):
+    return JobShortlistModel.query.filter_by(job_id=value)
+  
+  @staticmethod
+  def get_jobs_by_talentid(value):
+    return JobShortlistModel.query.filter_by(talent_id=value)
   # def __generate_hash(self, password):
   #   return bcrypt.generate_password_hash(password, rounds=10).decode("utf-8")
   

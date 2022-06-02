@@ -1,6 +1,7 @@
 #/src/views/JobView.py
 from flask import request, g, Blueprint, json, Response
 
+from ..shared.CustomService import custom_response
 from ..shared.Authentication import Auth
 from ..models.JobModel import *
 
@@ -73,13 +74,3 @@ def get_all_jobs():
     # res_job['status'] = 'success'
     return custom_response(res_jobs, 200)
 
-
-def custom_response(res, status_code):
-    """
-    Custom Response Function
-    """
-    return Response(
-        mimetype="application/json",
-        response=json.dumps(res),
-        status=status_code
-  )
