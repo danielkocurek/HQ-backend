@@ -32,11 +32,24 @@ def create():
 @Auth.auth_required
 def get_jobs_by_talentid(id):
     data = AppliedJobModel.get_jobs_by_talentid(id)
+    print(data)
     if not data:
         return custom_response({'error':'This user did not bid any jobs'}, 400)
     res_data = []
     for appliedjob in data:
-        job_id = appliedjob_schema.load(appliedjob).get('job_id')
+        job_id = appliedjob_schema.dump(appliedjob).get('job_id')
+        res_data.append(job_id)
+    return custom_response(res_data,200)
+
+@appliedjob_api.route('/jobs_by_companyid/<int:id>', methods=['GET'])
+@Auth.auth_required
+def get_jobs_by_companyid(id):
+    data = AppliedJobModel.get_jobs_by_companyid(id)
+    if not data:
+        return custom_response({'error':'This user did not bid any jobs'}, 400)
+    res_data = []
+    for appliedjob in data:
+        job_id = appliedjob_schema.dump(appliedjob).get('job_id')
         res_data.append(job_id)
     return custom_response(res_data,200)
 
@@ -48,7 +61,7 @@ def get_talents_by_jobid(id):
         return custom_response({'error':'Any talents did not apply this job'}, 400)
     res_data = []
     for appliedjob in data:
-        talent_id = appliedjob_schema.load(appliedjob)
+        talent_id = appliedjob_schema.dump(appliedjob)
         res_data.append(talent_id)
     return custom_response(res_data,200)
     

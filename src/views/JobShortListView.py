@@ -35,7 +35,7 @@ def get_jobs_by_taletnid(id):
         return custom_response({'error':'This user is not on any job shortlist' }, 400)
     res_data = []
     for jobshort in data:
-        job_id = jobshortlist_schema.load(jobshort).get('talent_id')
+        job_id = jobshortlist_schema.dump(jobshort).get('talent_id')
         res_data.append(job_id)
     return custom_response(res_data, 200)
 
@@ -47,6 +47,6 @@ def get_talents_by_jobid(id):
         return custom_response({'error':'There is not any shortlisted user in this job'})
     res_data = []
     for jobshort in data:
-        talent_id = jobshortlist_schema.load(jobshort).get('job_id')
+        talent_id = jobshortlist_schema.dump(jobshort).get('job_id')
         res_data.append(talent_id)
     return custom_response(res_data, 200)

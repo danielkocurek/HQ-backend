@@ -12,7 +12,7 @@ class JobShortlistModel(db.Model):
   __tablename__ = 'jobshortlists'
 
   id = db.Column(db.Integer, primary_key=True)
-  talent_id = db.Column(db.Integer, db.ForeignKey('talents.id'), nullable=False)
+  talent_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
   job_id = db.Column(db.Integer, db.ForeignKey('jobs.id'), nullable=False)
 
   # class constructor
@@ -28,6 +28,8 @@ class JobShortlistModel(db.Model):
     db.session.commit()
 
   def update(self, data):
+    for key, item in data.items():
+        setattr(self, key, item)
     db.session.commit()
 
   def delete(self):

@@ -84,7 +84,6 @@ def get_jobs_by_page_num(page_num, page_length):
     if not jobs:
         return custom_response({'error':'This company did not post any jobs'},400)
     data_jobs = job_schema.dump(jobs.items, many=True)
-    print(data_jobs)
     res_jobs = []
     for job in data_jobs:
         company_id = job.get('company_id')
@@ -99,6 +98,9 @@ def get_jobs_by_page_num(page_num, page_length):
 def get_jobs_user_by_page_num(page_num, page_length):
     user_id = g.user.get('id')
     applied_job_list = AppliedJobModel.get_jobs_by_talentid(user_id)
+    applied_job_ids = []
+    for tmp_job in applied_job_list:
+        applied_job_ids.append(AppliedJobSchema().dump(tmp_job).get('job_id'))
     try:
         jobs = JobModel.get_all_jobs_by_pagination(page_num, page_length)
     except ValidationErr as error:
@@ -107,7 +109,6 @@ def get_jobs_user_by_page_num(page_num, page_length):
     if not jobs:
         return custom_response({'error':'This company did not post any jobs'},400)
     data_jobs = job_schema.dump(jobs.items, many=True)
-    print(data_jobs)
     res_jobs = []
     for job in data_jobs:
         company_id = job.get('company_id')
@@ -115,7 +116,7 @@ def get_jobs_user_by_page_num(page_num, page_length):
         job['company_logo'] = JobModel.get_companylogo(company_id)
         job['company_name'] = JobModel.get_companyname(company_id)
         job['company_video'] = JobModel.get_companyvideo(company_id)
-        if not job_id in applied_job_list:
+        if not job_id in applied_job_ids:
             res_jobs.append(job)
     return custom_response(res_jobs, 200)
 

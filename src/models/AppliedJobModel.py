@@ -2,6 +2,8 @@
 from marshmallow import fields, Schema
 import datetime
 
+from src.models.JobModel import JobModel
+
 from . import db, bcrypt
 
 class AppliedJobModel(db.Model):
@@ -13,7 +15,8 @@ class AppliedJobModel(db.Model):
 
   id = db.Column(db.Integer, primary_key=True)
   job_id = db.Column(db.Integer, db.ForeignKey('jobs.id'), nullable=False)
-  talent_id = db.Column(db.Integer, db.ForeignKey('talents.id'), nullable=False)
+  talent_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+  company_id = db.Column(db.Integer, db.ForeignKey('companies.id'), nullable=False)
   applied_at = db.Column(db.DateTime, nullable=False)
 
   # class constructor
@@ -24,12 +27,15 @@ class AppliedJobModel(db.Model):
     self.job_id = data.get('job_id')
     self.talent_id = data.get('talent_id')
     self.applied_at = datetime.datetime.utcnow()
+    self.company_id = JobModel.get_job_by_id(self.job_id).company_id
 
   def save(self):
     db.session.add(self)
     db.session.commit()
 
   def update(self, data):
+    for key, item in data.items():
+      setattr(self, key, item)
     db.session.commit()
 
   def delete(self):
@@ -45,11 +51,15 @@ class AppliedJobModel(db.Model):
   #   return ProfileModel.query.get(id)
   @staticmethod
   def get_talents_by_jobid(value):
-    return AppliedJobModel.query.filter_by(job_id=value)
+    return AppliedJobModel.query.filter_by(job_id=value).all()
   
   @staticmethod
   def get_jobs_by_talentid(value):
-    return AppliedJobModel.query.filter_by(talent_id=value)
+    return AppliedJobModel.query.filter_by(talent_id=value).all()
+  
+  @staticmethod
+  def get_jobs_by_companyid(value):
+    return AppliedJobModel.query.filter_by(company_id=value).all()
   # @staticmethod
   # def get_user_by_email(value):
   #   return ProfileModel.query.filter_by(email=value).first()
@@ -67,5 +77,6 @@ class AppliedJobSchema(Schema):
   id = fields.Int(dump_only=True)
   job_id = fields.Int(required=True)
   talent_id = fields.Int(required=True)
+  company_id = fields.Int(required=True)
   applied_at = fields.DateTime(dump_only=True)
 
