@@ -67,5 +67,5 @@ class AppliedJobSchema(Schema):
   id = fields.Int(dump_only=True)
   job_id = fields.Int(required=True)
   talent_id = fields.Int(required=True)
-  applied_at = fields.DateTime(required=True)
+  applied_at = fields.DateTime(dump_only=True)
 

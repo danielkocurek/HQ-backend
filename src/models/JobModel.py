@@ -84,9 +84,12 @@ class JobModel(db.Model):
   @staticmethod
   def get_companylogo(id):
     user_id = CompanyModel.query.get(id).user_id
-    print(ProfileModel.query.filter_by(user_id=user_id).first().avator)
     return ProfileModel.query.filter_by(user_id=user_id).first().avator
-  
+
+  @staticmethod
+  def get_companyvideo(id):
+    user_id = CompanyModel.query.get(id).user_id
+    return ProfileModel.query.filter_by(user_id=user_id).first().video  
   
   @staticmethod
   def get_companyname(id):
