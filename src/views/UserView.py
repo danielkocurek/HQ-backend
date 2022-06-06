@@ -127,12 +127,12 @@ def resend():
 
   return custom_response({'status': 'success'}, 200)
 
-@user_api.route('/talent_all', methods=['GET'])
-def get_talent_all():
+@user_api.route('/talents_all/<int:page_num>/<int:page_length>', methods=['GET'])
+def get_talent_all(page_num, page_length):
   """
   Get all users
   """
-  users = UserModel.get_all_users()
+  users = UserModel.get_talents_by_page_num(page_num,page_length)
   ser_users = user_schema.dump(users, many=True)
   res_talent_data = []
   for ser_user in ser_users:

@@ -24,7 +24,7 @@ class TalentModel(db.Model):
     region = db.Column(JSON)
     current_jobTitle = db.Column(db.String(128))
     company = db.Column(db.String(128))
-    current_jobDescription = db.Column(db.String(128))
+    current_jobDescription = db.Column(db.Text)
 
     # class constructor
     def __init__(self, data):
@@ -57,6 +57,10 @@ class TalentModel(db.Model):
     def get_all_talent():
         return TalentModel.query.all()
 
+    @staticmethod
+    def get_all_talent_page_num(page_num, page_length):
+        return TalentModel.query.paginate(per_page=page_length, page=page_num, error_out=True)
+    
     @staticmethod
     def get_talent_by_id(id):
         return TalentModel.query.get(id)
