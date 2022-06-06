@@ -63,7 +63,13 @@ def update(id):
   res_video['status'] = 'success'
   return custom_response(res_video,200)
 
-
+@video_api.route('/<int:id>',methods=['GET'])
+@Auth.auth_required
+def getVideoById(id):
+  video = VideoModel.get_video(id)
+  res_video = video_schema.dump(video)
+  res_video['status'] = 'success'
+  return custom_response(res_video,200)
 
           
 @video_api.route('/display/<filename>')

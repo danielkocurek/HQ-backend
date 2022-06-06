@@ -40,13 +40,13 @@ def get_all():
   data['status'] = 'success'
   return custom_response(data, 200)
 
-@talent_api.route('/<int:id>', methods=['GET'])
+@talent_api.route('/by_user/<int:user_id>', methods=['GET'])
 @Auth.auth_required
-def get_one(id):
+def get_talent_by_userid(user_id):
   """
   Get A Talent
   """
-  talent = TalentModel.get_talent_by_id(id)
+  talent = TalentModel.get_talent_by_userid(user_id)
   if not talent:
     return custom_response({'error': 'talent profile not found'}, 400)
   data = talent_schema.dump(talent)

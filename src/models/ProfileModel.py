@@ -73,10 +73,10 @@ class ProfileModel(db.Model):
 
 class ProfileSchema(Schema):
   id = fields.Int(dump_only=True)
-  avator = fields.Str()
-  resume = fields.Str()
-  video_id = fields.Int()
-  video = fields.Str()
+  avator = fields.Str(allow_none = True)
+  resume = fields.Str(allow_none = True)
+  video_id = fields.Int(allow_none = True)
+  video = fields.Str(allow_none = True)
   job = fields.List(fields.Int())
   user_id = fields.Int(required=True)
   work_history = fields.List(fields.String())

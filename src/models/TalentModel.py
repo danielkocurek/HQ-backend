@@ -46,10 +46,7 @@ class TalentModel(db.Model):
 
     def update(self, data):
         for key, item in data.items():
-            if key == 'password':
-                self.password = self.__generate_hash(item)
             setattr(self, key, item)
-        self.modified_at = datetime.datetime.utcnow()
         db.session.commit()
 
     def delete(self):
@@ -85,6 +82,6 @@ class TalentSchema(Schema):
     phone_number = fields.Dict(keys=fields.Str(), values=fields.Str())
     current_jobTitle = fields.Str()
     company = fields.Str()
-    current_jobDescription = fields.Str()
+    current_jobDescription = fields.Str(required = False)
     region = fields.Dict(keys=fields.Str(), values=fields.Str())
 
