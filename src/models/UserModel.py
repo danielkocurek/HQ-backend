@@ -73,7 +73,7 @@ class UserModel(db.Model):
   def update(self, data):
     for key, item in data.items():
       if key == 'password':
-        self.password = self.__generate_hash(item)
+        item = self.__generate_hash(item)
       setattr(self, key, item)
     self.modified_at = datetime.datetime.utcnow()
     db.session.commit()
@@ -110,7 +110,7 @@ class UserModel(db.Model):
 class UserSchema(Schema):
   id = fields.Int(dump_only=True)
   email = fields.Email(required=True)
-  password = fields.Str(required=True, load_only=True)
+  password = fields.Str(required=True)
   verify_code = fields.Int()
   register_status = fields.Bool()
   created_at = fields.DateTime(dump_only=True)

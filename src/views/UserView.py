@@ -81,12 +81,12 @@ def verify():
   if user_schema.dump(user_in_db).get('verify_code') != data.get('verify_code'):
     message = {'error': 'Failed Verify code, Please check code in your email'}
     return custom_response(message, 400)
-  update_user['register_status'] = True
+  data['register_status'] = True
   print(update_user)
 
   # setattr(data, key, item)
   # user = UserModel(user_in_db)
-  user_in_db.update(update_user)
+  user_in_db.update(data)
   print("=======================")
   print(update_user.get('id'))
   token = Auth.generate_token(update_user.get('id'))
