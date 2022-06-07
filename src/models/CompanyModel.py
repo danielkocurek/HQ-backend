@@ -14,6 +14,7 @@ class CompanyModel(db.Model):
 
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String(128), nullable=False)
+  uuid = db.Column(db.String(128))
   user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
   description = db.Column(db.String(128))
   region = db.Column(JSON)
@@ -27,6 +28,7 @@ class CompanyModel(db.Model):
     Class constructor
     """
     self.name = data.get('name')
+    self.uuid = data.get('uuid')
     self.user_id = data.get("user_id")
     self.description = data.get("description")
     self.region = data.get("region")
@@ -71,6 +73,7 @@ class CompanyModel(db.Model):
 class CompanySchema(Schema):
   id = fields.Int(dump_only=True)
   name = fields.Str(required=True)
+  uuid = fields.Str(allow_none = True)
   user_id = fields.Int(required=True)
   description = fields.Str()
   phone_number = fields.Dict(keys=fields.Str(), values=fields.Str())

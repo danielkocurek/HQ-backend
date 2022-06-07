@@ -98,6 +98,14 @@ class UserModel(db.Model):
   def get_talents_by_page_num(page_num, page_length):
     return UserModel.query.filter_by(type='talent').paginate(per_page=page_length, page=page_num, error_out=True)
 
+  @staticmethod
+  def get_companies_by_page_num(page_num, page_length):
+    return UserModel.query.filter_by(type='company').paginate(per_page=page_length, page=page_num, error_out=True)
+  
+  @staticmethod
+  def get_companies_count():
+    return UserModel.query.filter_by(type='company').count()
+
   def __generate_hash(self, password):
     return bcrypt.generate_password_hash(password, rounds=10).decode("utf-8")
   

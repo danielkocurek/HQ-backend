@@ -134,7 +134,7 @@ def get_talent_all(page_num, page_length):
   Get all users
   """
   users = UserModel.get_talents_by_page_num(page_num,page_length)
-  ser_users = user_schema.dump(users, many=True)
+  ser_users = user_schema.dump(users.items, many=True)
   res_talent_data = []
   for ser_user in ser_users:
     if (ser_user.get('type') == 'talent'):
@@ -165,13 +165,13 @@ def get_talent_all(page_num, page_length):
       res_talent_data.append(ser_user)      
   return custom_response(res_talent_data, 200)
 
-@user_api.route('/company_all', methods=['GET'])
-def get_company_all():
+@user_api.route('/company_all/<int:page_num>/<int:page_length>', methods=['GET'])
+def get_company_all(page_num, page_length):
   """
   Get all users
   """
-  users = UserModel.get_all_users()
-  ser_users = user_schema.dump(users, many=True)
+  users = UserModel.get_companies_by_page_num(page_num, page_length)
+  ser_users = user_schema.dump(users.items, many=True)
   res_company_data = []
   for ser_user in ser_users:
     if (ser_user.get('type') == 'company'):
@@ -202,6 +202,15 @@ def get_company_all():
       res_company_data.append(ser_user)
   return custom_response(res_company_data, 200)
 
+@user_api.route('/companies_count', methods=['GET'])
+def get_companies_count():
+  companies_count = UserModel.get_companies_count()
+  print(companies_count)
+  res_data = {}
+  res_data['count'] = companies_count
+  res_data['status'] = 'success'
+  return custom_response(res_data, 200)
+ 
 @user_api.route('/<int:user_id>', methods=['GET'])
 @Auth.auth_required
 def get_a_user(user_id):
