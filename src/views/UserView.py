@@ -25,6 +25,7 @@ def create():
   Create User Function
   """
   req_data = request.get_json()
+  print(req_data)
   try:
     data = user_schema.load(req_data)
   except ValidationError as error:
@@ -339,7 +340,39 @@ def login():
     return custom_response({'error': 'invalid credentials'}, 400)
   if ser_data.get('register_status') != True:
     print("failed")
-    return custom_response({'error':'you did not verify with sms_code'},400)
+    return custom_response({'error':'you did not verify with sms_code, Please sign up with this eamil'},400)
+  token = Auth.generate_token(ser_data.get('id'))
+  # session['username'] = ser_data.get('id')
+  return custom_response({'jwt_token': token, "id":ser_data.get('id'), "email":ser_data.get('email'), "type":ser_data.get('type'), 'status':'success'}, 200)
+
+@user_api.route('/admin/login', methods=['POST'])
+def admin_login():
+  """
+  User Login Function
+  """
+  req_data = request.get_json()
+  print(req_data)
+  
+  try:
+    data = user_schema.load(req_data, partial=True)
+  except ValidationError as error:
+    print("ERROR: package.json is invalid")
+    print(error.messages)
+    return custom_response(error, 400)
+  # if error:
+  #   return custom_response(error, 400)
+  print(data)
+  if not data.get('email') or not data.get('password'):
+    return custom_response({'error': 'you need email and password to sign in'}, 400)
+  user = UserModel.get_user_by_email(data.get('email'))
+  ser_data = user_schema.dump(user)
+  if not user:
+    return custom_response({'error': 'invalid credentials'}, 400)
+  if not user.check_hash(data.get('password')):
+    return custom_response({'error': 'invalid credentials'}, 400)
+  if ser_data.get('type') !='admin':
+    print("failed")
+    return custom_response({'error':'you are not admin'},400)
   token = Auth.generate_token(ser_data.get('id'))
   # session['username'] = ser_data.get('id')
   return custom_response({'jwt_token': token, "id":ser_data.get('id'), "email":ser_data.get('email'), "type":ser_data.get('type'), 'status':'success'}, 200)
