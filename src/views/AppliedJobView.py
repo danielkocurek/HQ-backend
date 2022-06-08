@@ -111,16 +111,18 @@ def get_jobcount_by_user():
 def get_talentcount_by_company(id):
     try:
         appliedjobs = AppliedJobModel.get_by_companyid(id)
+        shortlistjobs = JobShortlistModel.get_by_companyid(id)
     except ValidationError as error:
         print(error.messages)
         return custom_response(error,400)
     data_jobs = appliedjob_schema.dump(appliedjobs, many=True)
+    short_jobs = JobShortlistSchema().dump(shortlistjobs, many=True)
     talents_list = []
     for tmp in data_jobs:
         talents_list.append(tmp.get('talent_id'))
     # talents_list = list(set(talents_list))
     print(len(talents_list))
-    return custom_response({'count':len(talents_list),'status':'success'}, 200)
+    return custom_response({'applied_count':len(talents_list),'shortlist_count':len(short_jobs),'status':'success'}, 200)
 
 @appliedjob_api.route('/job_by_company/<int:id>/<int:page_num>/<int:page_length>', methods = ['GET'])
 @Auth.auth_required
