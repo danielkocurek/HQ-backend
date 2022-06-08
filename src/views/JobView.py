@@ -1,5 +1,5 @@
 #/src/views/JobView.py
-from xml.dom import ValidationErr
+from marshmallow import ValidationError
 from flask import request, g, Blueprint, json, Response
 
 from ..shared.CustomService import custom_response
@@ -78,7 +78,7 @@ def get_jobs_by_companyid(id):
 def get_jobs_by_page_num(page_num, page_length):
     try:
         jobs = JobModel.get_all_jobs_by_pagination(page_num, page_length)
-    except ValidationErr as error:
+    except ValidationError as error:
         print(error.messages)
         return custom_response(error,400)
     if not jobs:
@@ -103,7 +103,7 @@ def get_jobs_user_by_page_num(page_num, page_length):
         applied_job_ids.append(AppliedJobSchema().dump(tmp_job).get('job_id'))
     try:
         jobs = JobModel.get_all_jobs_by_pagination(page_num, page_length)
-    except ValidationErr as error:
+    except ValidationError as error:
         print(error.messages)
         return custom_response(error,400)
     if not jobs:

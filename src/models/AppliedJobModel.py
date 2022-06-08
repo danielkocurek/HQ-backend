@@ -60,6 +60,10 @@ class AppliedJobModel(db.Model):
   @staticmethod
   def get_jobs_by_companyid(value):
     return AppliedJobModel.query.filter_by(company_id=value).all()
+  
+  @staticmethod
+  def get_jobcount_by_user(value):
+    return AppliedJobModel.query.filter_by(talent_id=value).count()
   # @staticmethod
   # def get_user_by_email(value):
   #   return ProfileModel.query.filter_by(email=value).first()
