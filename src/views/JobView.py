@@ -97,18 +97,18 @@ def get_jobs_by_page_num(page_num, page_length):
 @Auth.auth_required
 def get_jobs_user_by_page_num(page_num, page_length):
     user_id = g.user.get('id')
-    applied_job_list = AppliedJobModel.get_jobs_by_talentid(user_id)
+    applied_job_list = AppliedJobModel.get_by_talentid(user_id)
     applied_job_ids = []
     for tmp_job in applied_job_list:
         applied_job_ids.append(AppliedJobSchema().dump(tmp_job).get('job_id'))
     try:
-        jobs = JobModel.get_all_jobs_by_pagination(page_num, page_length)
+        jobs = JobModel.get_all_jobs()
     except ValidationError as error:
         print(error.messages)
         return custom_response(error,400)
     if not jobs:
         return custom_response({'error':'This company did not post any jobs'},400)
-    data_jobs = job_schema.dump(jobs.items, many=True)
+    data_jobs = job_schema.dump(jobs, many=True)
     res_jobs = []
     for job in data_jobs:
         company_id = job.get('company_id')

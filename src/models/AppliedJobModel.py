@@ -50,15 +50,15 @@ class AppliedJobModel(db.Model):
   # def get_one_user(id):
   #   return ProfileModel.query.get(id)
   @staticmethod
-  def get_talents_by_jobid(value):
+  def get_by_jobid(value):
     return AppliedJobModel.query.filter_by(job_id=value).all()
   
   @staticmethod
-  def get_jobs_by_talentid(value):
+  def get_by_talentid(value):
     return AppliedJobModel.query.filter_by(talent_id=value).all()
   
   @staticmethod
-  def get_jobs_by_companyid(value):
+  def get_by_companyid(value):
     return AppliedJobModel.query.filter_by(company_id=value).all()
   
   @staticmethod

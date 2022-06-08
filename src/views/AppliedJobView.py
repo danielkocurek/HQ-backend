@@ -32,7 +32,7 @@ def create():
 @appliedjob_api.route('/jobs/<int:id>', methods=['GET'])
 @Auth.auth_required
 def get_jobs_by_talentid(id):
-    data = AppliedJobModel.get_jobs_by_talentid(id)
+    data = AppliedJobModel.get_by_talentid(id)
     print(data)
     if not data:
         return custom_response({'error':'This user did not bid any jobs'}, 400)
@@ -45,7 +45,7 @@ def get_jobs_by_talentid(id):
 @appliedjob_api.route('/jobs_by_companyid/<int:id>', methods=['GET'])
 @Auth.auth_required
 def get_jobs_by_companyid(id):
-    data = AppliedJobModel.get_jobs_by_companyid(id)
+    data = AppliedJobModel.get_by_companyid(id)
     if not data:
         return custom_response({'error':'This user did not bid any jobs'}, 400)
     res_data = []
@@ -57,7 +57,7 @@ def get_jobs_by_companyid(id):
 @appliedjob_api.route('/talents/<int:id>', methods=['GET'])
 @Auth.auth_required
 def get_talents_by_jobid(id):
-    data = AppliedJobModel.get_talents_by_jobid(id)
+    data = AppliedJobModel.get_by_jobid(id)
     if not data:
         return custom_response({'error':'Any talents did not apply this job'}, 400)
     res_data = []
@@ -70,7 +70,7 @@ def get_talents_by_jobid(id):
 @Auth.auth_required
 def get_jobs_user_by_page_num(page_num, page_length):
     user_id = g.user.get('id')
-    applied_job_list = AppliedJobModel.get_jobs_by_talentid(user_id)
+    applied_job_list = AppliedJobModel.get_by_talentid(user_id)
     applied_job_ids = []
     for tmp_job in applied_job_list:
         applied_job_ids.append(AppliedJobSchema().dump(tmp_job).get('job_id'))
@@ -103,6 +103,23 @@ def get_jobcount_by_user():
         print(error.messages)
         return custom_response(error,400)
     return custom_response({'count':job_count,'status':'success'}, 200)
+
+
+@appliedjob_api.route('/talentcount_by_company/<int:id>', methods = ['GET'])
+@Auth.auth_required
+def get_talentcount_by_company(id):
+    try:
+        appliedjobs = AppliedJobModel.get_by_companyid(id)
+    except ValidationError as error:
+        print(error.messages)
+        return custom_response(error,400)
+    data_jobs = appliedjob_schema.dump(appliedjobs, many=True)
+    talents_list = []
+    for tmp in data_jobs:
+        talents_list.append(tmp.get('talent_id'))
+    # talents_list = list(set(talents_list))
+    print(len(talents_list))
+    return custom_response({'count':len(talents_list),'status':'success'}, 200)
     
     
         
