@@ -62,6 +62,10 @@ class AppliedJobModel(db.Model):
     return AppliedJobModel.query.filter_by(company_id=value).all()
   
   @staticmethod
+  def get_by_companyid_page(value, page_num, page_length):
+    return AppliedJobModel.query.filter_by(company_id=value).paginate(page=page_num, per_page=page_length, error_out=True)
+  
+  @staticmethod
   def get_jobcount_by_user(value):
     return AppliedJobModel.query.filter_by(talent_id=value).count()
   # @staticmethod

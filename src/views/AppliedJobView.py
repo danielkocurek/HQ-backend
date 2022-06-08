@@ -7,6 +7,7 @@ from ..shared.CustomService import custom_response
 from ..shared.Authentication import Auth
 from ..models.AppliedJobModel import *
 from ..models.JobModel import *
+from ..models.JobShortlistModel import *
 
 appliedjob_api = Blueprint('appliedjob_api', __name__)
 appliedjob_schema = AppliedJobSchema()
@@ -120,9 +121,27 @@ def get_talentcount_by_company(id):
     # talents_list = list(set(talents_list))
     print(len(talents_list))
     return custom_response({'count':len(talents_list),'status':'success'}, 200)
-    
-    
-        
+
+@appliedjob_api.route('/job_by_company/<int:id>/<int:page_num>/<int:page_length>', methods = ['GET'])
+@Auth.auth_required
+def get_jobs_by_company(id, page_num, page_length):
+    try:
+        appliedjobs = AppliedJobModel.get_by_companyid_page(id, page_num, page_length)
+    except ValidationError as error:
+        print(error.messages)
+        custom_response(error,400)
+    print(appliedjobs)
+    data_jobs = appliedjob_schema.dump(appliedjobs.items, many=True)
+    res_data = []
+    for tmp in data_jobs:
+        data = JobSchema().dump(JobModel.get_job_by_id(tmp.get('job_id')))
+        data['company_logo'] = JobModel.get_companylogo(id) 
+        data['company_name'] = JobModel.get_companyname(id)
+        data['company_video'] = JobModel.get_companyvideo(id)
+        data['appliedtalents_count'] = len(appliedjob_schema.dump(AppliedJobModel.get_by_jobid(tmp.get('job_id')), many=True))
+        data['shortlisttalents_count'] = len(JobShortlistSchema().dump(JobShortlistModel.get_talents_by_jobid(tmp.get('job_id')), many=True))
+        res_data.append(data)
+    return custom_response(res_data, 200)
     
 
     
