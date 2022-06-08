@@ -102,13 +102,13 @@ def get_jobs_user_by_page_num(page_num, page_length):
     for tmp_job in applied_job_list:
         applied_job_ids.append(AppliedJobSchema().dump(tmp_job).get('job_id'))
     try:
-        jobs = JobModel.get_all_jobs()
+        jobs = JobModel.get_all_jobs_by_pagination_blocklist(applied_job_ids, page_num, page_length)
     except ValidationError as error:
         print(error.messages)
         return custom_response(error,400)
     if not jobs:
         return custom_response({'error':'This company did not post any jobs'},400)
-    data_jobs = job_schema.dump(jobs, many=True)
+    data_jobs = job_schema.dump(jobs.items, many=True)
     res_jobs = []
     for job in data_jobs:
         company_id = job.get('company_id')
@@ -116,8 +116,8 @@ def get_jobs_user_by_page_num(page_num, page_length):
         job['company_logo'] = JobModel.get_companylogo(company_id)
         job['company_name'] = JobModel.get_companyname(company_id)
         job['company_video'] = JobModel.get_companyvideo(company_id)
-        if not job_id in applied_job_ids:
-            res_jobs.append(job)
+        # if not job_id in applied_job_ids:
+        res_jobs.append(job)
     return custom_response(res_jobs, 200)
 
 

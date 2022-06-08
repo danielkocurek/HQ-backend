@@ -76,7 +76,7 @@ def get_jobs_user_by_page_num(page_num, page_length):
     for tmp_job in applied_job_list:
         applied_job_ids.append(AppliedJobSchema().dump(tmp_job).get('job_id'))
     try:
-        jobs = JobModel.get_all_jobs_by_pagination(page_num, page_length)
+        jobs = JobModel.get_all_jobs_by_pagination_allowlist(applied_job_ids, page_num, page_length)
     except ValidationError as error:
         print(error.messages)
         return custom_response(error,400)
@@ -90,8 +90,8 @@ def get_jobs_user_by_page_num(page_num, page_length):
         job['company_logo'] = JobModel.get_companylogo(company_id)
         job['company_name'] = JobModel.get_companyname(company_id)
         job['company_video'] = JobModel.get_companyvideo(company_id)
-        if job_id in applied_job_ids:
-            res_jobs.append(job)
+        # if job_id in applied_job_ids:
+        res_jobs.append(job)
     return custom_response(res_jobs, 200)
 
 @appliedjob_api.route('/jobcount_by_user', methods = ['GET'])
