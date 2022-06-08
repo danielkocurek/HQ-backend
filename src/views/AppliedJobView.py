@@ -8,6 +8,8 @@ from ..shared.Authentication import Auth
 from ..models.AppliedJobModel import *
 from ..models.JobModel import *
 from ..models.JobShortlistModel import *
+from ..models.TalentModel import *
+from ..models.ProfileModel import *
 
 appliedjob_api = Blueprint('appliedjob_api', __name__)
 appliedjob_schema = AppliedJobSchema()
@@ -132,7 +134,6 @@ def get_jobs_by_company(id, page_num, page_length):
     except ValidationError as error:
         print(error.messages)
         custom_response(error,400)
-    print(appliedjobs)
     data_jobs = appliedjob_schema.dump(appliedjobs.items, many=True)
     res_data = []
     for tmp in data_jobs:
@@ -144,6 +145,18 @@ def get_jobs_by_company(id, page_num, page_length):
         data['shortlisttalents_count'] = len(JobShortlistSchema().dump(JobShortlistModel.get_talents_by_jobid(tmp.get('job_id')), many=True))
         res_data.append(data)
     return custom_response(res_data, 200)
-    
 
-    
+@appliedjob_api.route('/talents_by_job/<int:id>/<int:page_num>/<int:page_length>', methods = ['GET'])
+@Auth.auth_required
+def get_all_talents_by_job(id, page_num, page_length):
+    appliedtalents = AppliedJobModel.get_by_jobid_page(id, page_num, page_length)
+    data_talents = appliedjob_schema.dump(appliedtalents.items, many=True)
+    res_data = []
+    for tmp in data_talents:
+        data = TalentSchema().dump(TalentModel.get_talent_by_userid(tmp.get('talent_id')))
+        talent_profile = ProfileSchema().dump(ProfileModel.get_profile_by_userid(tmp.get('talent_id')))
+        data['talent_logo'] = talent_profile.get('avator')
+        data['video_id'] = talent_profile.get('video_id')
+        data['resume'] = talent_profile.get('resume')
+        res_data.append(data)
+    return custom_response(res_data, 200)
