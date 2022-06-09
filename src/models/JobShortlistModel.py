@@ -61,6 +61,10 @@ class JobShortlistModel(db.Model):
   @staticmethod
   def get_by_companyid(value):
     return JobShortlistModel.query.filter_by(company_id=value)
+  
+  @staticmethod
+  def get_by_jobid_page(value, page_num, page_length):
+    return JobShortlistModel.query.filter_by(job_id=value).paginate(page=page_num, per_page=page_length, error_out=True)
   # def __generate_hash(self, password):
   #   return bcrypt.generate_password_hash(password, rounds=10).decode("utf-8")
   
