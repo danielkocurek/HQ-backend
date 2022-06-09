@@ -31,6 +31,7 @@ class AppliedJobModel(db.Model):
     self.applied_at = datetime.datetime.utcnow()
     self.company_id = JobModel.get_job_by_id(self.job_id).company_id
     self.shortlist_status = False
+    self.shortlist_at = datetime.datetime.utcnow()
 
   def save(self):
     db.session.add(self)
@@ -39,6 +40,7 @@ class AppliedJobModel(db.Model):
   def update(self, data):
     for key, item in data.items():
       setattr(self, key, item)
+    self.shortlist_at = datetime.datetime.utcnow()
     db.session.commit()
 
   def delete(self):
@@ -95,9 +97,9 @@ class AppliedJobModel(db.Model):
 
 class AppliedJobSchema(Schema):
   id = fields.Int(dump_only=True)
-  job_id = fields.Int(required=True)
-  talent_id = fields.Int(required=True)
-  company_id = fields.Int(required=True)
+  job_id = fields.Int(allow_none = True)
+  talent_id = fields.Int(allow_none = True)
+  company_id = fields.Int(allow_none = True)
   shortlist_status = fields.Bool(allow_none = True)
   applied_at = fields.DateTime(dump_only=True)
   shortlist_at = fields.DateTime(allow_none = True)
