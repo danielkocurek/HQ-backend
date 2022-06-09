@@ -6,7 +6,6 @@ from ..shared.CustomService import custom_response
 from ..shared.Authentication import Auth
 from ..models.JobModel import *
 from ..models.AppliedJobModel import *
-from ..models.JobShortlistModel import *
 from ..models.AppliedJobModel import *
 
 job_api = Blueprint('job_api', __name__)
@@ -72,7 +71,11 @@ def get_jobs_by_companyid(id):
         job['company_name'] = JobModel.get_companyname(company_id)
         job['company_video'] = JobModel.get_companyvideo(company_id)
         job['appliedtalents_count'] = len(AppliedJobSchema().dump(AppliedJobModel.get_by_jobid(job.get('id')), many=True))
-        job['shortlisttalents_count'] = len(JobShortlistSchema().dump(JobShortlistModel.get_talents_by_jobid(job.get('id')), many=True))
+        shortlist = []
+        for tmp in AppliedJobSchema().dump(AppliedJobModel.get_by_jobid(job.get('id')), many=True):
+            if tmp.get('shortlist_status'):
+                shortlist.append(tmp.get('talent_id'))
+        job['shortlisttalents_count'] = len(shortlist)
         res_jobs.append(job)
     # res_job = job_schema.dump(job)
     # res_job['status'] = 'success'

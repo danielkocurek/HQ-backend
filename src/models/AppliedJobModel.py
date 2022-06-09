@@ -17,7 +17,9 @@ class AppliedJobModel(db.Model):
   job_id = db.Column(db.Integer, db.ForeignKey('jobs.id'), nullable=False)
   talent_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
   company_id = db.Column(db.Integer, db.ForeignKey('companies.id'), nullable=False)
+  shortlist_status = db.Column(db.Boolean)
   applied_at = db.Column(db.DateTime, nullable=False)
+  shortlist_at = db.Column(db.DateTime)
 
   # class constructor
   def __init__(self, data):
@@ -28,6 +30,7 @@ class AppliedJobModel(db.Model):
     self.talent_id = data.get('talent_id')
     self.applied_at = datetime.datetime.utcnow()
     self.company_id = JobModel.get_job_by_id(self.job_id).company_id
+    self.shortlist_status = False
 
   def save(self):
     db.session.add(self)
@@ -46,9 +49,10 @@ class AppliedJobModel(db.Model):
   # def get_all_users():
   #   return ProfileModel.query.all()
 
-  # @staticmethod
-  # def get_one_user(id):
-  #   return ProfileModel.query.get(id)
+  @staticmethod
+  def get_one(id):
+    return AppliedJobModel.query.get(id)
+  
   @staticmethod
   def get_by_jobid(value):
     return AppliedJobModel.query.filter_by(job_id=value).all()
@@ -90,5 +94,7 @@ class AppliedJobSchema(Schema):
   job_id = fields.Int(required=True)
   talent_id = fields.Int(required=True)
   company_id = fields.Int(required=True)
+  shortlist_status = fields.Bool(allow_none = True)
   applied_at = fields.DateTime(dump_only=True)
+  shortlist_at = fields.DateTime(allow_none = True)
 

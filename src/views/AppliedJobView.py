@@ -7,7 +7,6 @@ from ..shared.CustomService import custom_response
 from ..shared.Authentication import Auth
 from ..models.AppliedJobModel import *
 from ..models.JobModel import *
-from ..models.JobShortlistModel import *
 from ..models.TalentModel import *
 from ..models.ProfileModel import *
 
@@ -31,6 +30,22 @@ def create():
     res_data = appliedjob_schema.dump(appliedjob)
     res_data['status'] = 'success'
     return custom_response(res_data,200)
+
+@appliedjob_api.route('/update/<int:id>', methods=['PUT'])
+@Auth.auth_required
+def update(id):
+    req_data = request.get_json()
+    try:
+        data = appliedjob_schema.load(req_data, partial=True)
+    except ValidationError as error:
+        print(error.messages)
+        return custom_response(error, 400)
+    appliedjob = AppliedJobModel.get_one(id)
+    if not data:
+        return custom_response({'error':'This is not exist in applied job list'}, 400)
+    appliedjob.update(data)
+    return custom_response({'status':'success'},200)
+        
 
 @appliedjob_api.route('/jobs/<int:id>', methods=['GET'])
 @Auth.auth_required
@@ -113,18 +128,15 @@ def get_jobcount_by_user():
 def get_talentcount_by_company(id):
     try:
         appliedjobs = AppliedJobModel.get_by_companyid(id)
-        shortlistjobs = JobShortlistModel.get_by_companyid(id)
     except ValidationError as error:
         print(error.messages)
         return custom_response(error,400)
     data_jobs = appliedjob_schema.dump(appliedjobs, many=True)
-    short_jobs = JobShortlistSchema().dump(shortlistjobs, many=True)
     talents_list = []
     for tmp in data_jobs:
-        talents_list.append(tmp.get('talent_id'))
-    # talents_list = list(set(talents_list))
-    print(len(talents_list))
-    return custom_response({'applied_count':len(talents_list),'shortlist_count':len(short_jobs),'status':'success'}, 200)
+        if tmp.get('shortlist_status'):
+            talents_list.append(tmp.get('talent_id'))
+    return custom_response({'applied_count':len(data_jobs),'shortlist_count':len(talents_list),'status':'success'}, 200)
 
 @appliedjob_api.route('/job_by_company/<int:id>/<int:page_num>/<int:page_length>', methods = ['GET'])
 @Auth.auth_required
@@ -142,7 +154,11 @@ def get_jobs_by_company(id, page_num, page_length):
         data['company_name'] = JobModel.get_companyname(id)
         data['company_video'] = JobModel.get_companyvideo(id)
         data['appliedtalents_count'] = len(appliedjob_schema.dump(AppliedJobModel.get_by_jobid(tmp.get('job_id')), many=True))
-        data['shortlisttalents_count'] = len(JobShortlistSchema().dump(JobShortlistModel.get_talents_by_jobid(tmp.get('job_id')), many=True))
+        shortlist = []
+        for ttmp in appliedjob_schema.dump(AppliedJobModel.get_by_jobid(tmp.get('job_id')), many=True):
+            if ttmp.get('shortlist_status'):
+                shortlist.append(ttmp.get('talent_id'))
+        data['shortlisttalents_count'] = len(shortlist)
         res_data.append(data)
     return custom_response(res_data, 200)
 
@@ -158,5 +174,7 @@ def get_all_talents_by_job(id, page_num, page_length):
         data['talent_logo'] = talent_profile.get('avator')
         data['video_id'] = talent_profile.get('video_id')
         data['resume'] = talent_profile.get('resume')
+        data['is_shortlist'] = tmp.get('shortlist_status')
+        data['appliedjob_id'] = tmp.get('id')
         res_data.append(data)
     return custom_response(res_data, 200)
