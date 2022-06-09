@@ -179,7 +179,7 @@ def get_all_talents_by_job(id, page_num, page_length):
         res_data.append(data)
     return custom_response(res_data, 200)
 
-@appliedjob_api.route('/shorlist_talents_by_job/<int:id>/<int:page_num>/<int:page_length>', methods = ['GET'])
+@appliedjob_api.route('/shortlist_talents_by_job/<int:id>/<int:page_num>/<int:page_length>', methods = ['GET'])
 @Auth.auth_required
 def get_all_shortlist_talents_by_job(id, page_num, page_length):
     appliedtalents = AppliedJobModel.get_by_shortlist_jobid_page(id, page_num, page_length)
