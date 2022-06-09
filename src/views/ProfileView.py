@@ -32,8 +32,6 @@ def create():
   profile = ProfileModel(data)
   profile.save()
   ser_data = profile_schema.dump(profile)
-  print("=======================")
-  print(ser_data.get('id'))
   # token = Auth.generate_token(ser_data.get('id'))
   # print(token)
   ser_data['status'] = 'success'
