@@ -127,5 +127,13 @@ def get_jobs_user_by_page_num(page_num, page_length):
         res_jobs.append(job)
     return custom_response(res_jobs, 200)
 
+@job_api.route('/jobs_count', methods=['GET'])
+def get_jobs_count():
+    jobs_count = JobModel.get_jobs_count()
+    res_data = {}
+    res_data['count'] = jobs_count;
+    res_data['status'] = 'success'
+    return custom_response(res_data, 200)
+ 
 
 

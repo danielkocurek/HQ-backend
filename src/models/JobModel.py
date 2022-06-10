@@ -76,6 +76,10 @@ class JobModel(db.Model):
     return JobModel.query.all()
   
   @staticmethod
+  def get_jobs_count():
+    return JobModel.query.count()
+  
+  @staticmethod
   def get_all_jobs_by_pagination_blocklist(id_lists, page_num, page_length):
     return JobModel.query.filter(JobModel.id.notin_( id_lists )).paginate(per_page=page_length, page=page_num, error_out=True)  
   
