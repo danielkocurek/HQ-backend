@@ -26,6 +26,8 @@ class TalentModel(db.Model):
     current_jobTitle = db.Column(db.String(128))
     company = db.Column(db.String(128))
     current_jobDescription = db.Column(db.Text)
+    years_experience = db.Column(db.String(128))
+    education = db.Column(db.String(128))
 
     # class constructor
     def __init__(self, data):
@@ -41,6 +43,8 @@ class TalentModel(db.Model):
         self.current_jobDescription = data.get('current_jobDescription')
         self.company = data.get('company')
         self.current_jobTitle = data.get('current_jobTitle')
+        self.years_experience = data.get('years_experience')
+        self.education = data.get('education')
 
     def save(self):
         db.session.add(self)
@@ -91,4 +95,7 @@ class TalentSchema(Schema):
     company = fields.Str()
     current_jobDescription = fields.Str(required = False)
     region = fields.Dict(keys=fields.Str(), values=fields.Str())
+    years_experience = fields.Str(allow_none=True)
+    years_experience = fields.Str(allow_none=True)
+    education = fields.Str(allow_none=True)
 

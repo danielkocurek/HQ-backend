@@ -128,14 +128,4 @@ def get_jobs_user_by_page_num(page_num, page_length):
     return custom_response(res_jobs, 200)
 
 
-@job_api.route('/all', methods = ['GET'])
-@Auth.auth_required
-def get_all_jobs():
-    jobs = JobModel.get_all_jobs()
-    if not jobs:
-        return custom_response({'error':'Companies did not post any jobs'},400)
-    res_jobs = job_schema.dump(jobs, many=True)
-    # res_job = job_schema.dump(job)
-    # res_job['status'] = 'success'
-    return custom_response(res_jobs, 200)
 

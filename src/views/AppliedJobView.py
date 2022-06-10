@@ -111,16 +111,45 @@ def get_jobs_user_by_page_num(page_num, page_length):
         res_jobs.append(job)
     return custom_response(res_jobs, 200)
 
+@appliedjob_api.route('/shortlist_jobs_by_user/<int:page_num>/<int:page_length>', methods = ['GET'])
+@Auth.auth_required
+def get_shortlist_jobs_user_by_page_num(page_num, page_length):
+    user_id = g.user.get('id')
+    applied_job_list = AppliedJobModel.get_shortlist_job_by_talentid(user_id)
+    applied_job_ids = []
+    for tmp_job in applied_job_list:
+        applied_job_ids.append(AppliedJobSchema().dump(tmp_job).get('job_id'))
+    try:
+        jobs = JobModel.get_all_jobs_by_pagination_allowlist(applied_job_ids, page_num, page_length)
+    except ValidationError as error:
+        print(error.messages)
+        return custom_response(error,400)
+    if not jobs:
+        return custom_response({'error':'This company did not post any jobs'},400)
+    data_jobs = JobSchema().dump(jobs.items, many=True)
+    res_jobs = []
+    for job in data_jobs:
+        company_id = job.get('company_id')
+        job_id = job.get('id')
+        job['company_logo'] = JobModel.get_companylogo(company_id)
+        job['company_name'] = JobModel.get_companyname(company_id)
+        job['company_video'] = JobModel.get_companyvideo(company_id)
+        # if job_id in applied_job_ids:
+        res_jobs.append(job)
+    return custom_response(res_jobs, 200)
+
 @appliedjob_api.route('/jobcount_by_user', methods = ['GET'])
 @Auth.auth_required
 def get_jobcount_by_user():
     user_id = g.user.get('id')
     try:
         job_count = AppliedJobModel.get_jobcount_by_user(user_id)
+        shortlist_job_count = AppliedJobModel.get_shortlist_jobcount_by_user(user_id)
+        print(shortlist_job_count)
     except ValidationError as error:
         print(error.messages)
         return custom_response(error,400)
-    return custom_response({'count':job_count,'status':'success'}, 200)
+    return custom_response({'applied_count':job_count,'shortlist_count':shortlist_job_count, 'status':'success'}, 200)
 
 
 @appliedjob_api.route('/talentcount_by_company/<int:id>', methods = ['GET'])
@@ -143,6 +172,30 @@ def get_talentcount_by_company(id):
 def get_jobs_by_company(id, page_num, page_length):
     try:
         appliedjobs = AppliedJobModel.get_by_companyid_page(id, page_num, page_length)
+    except ValidationError as error:
+        print(error.messages)
+        custom_response(error,400)
+    data_jobs = appliedjob_schema.dump(appliedjobs.items, many=True)
+    res_data = []
+    for tmp in data_jobs:
+        data = JobSchema().dump(JobModel.get_job_by_id(tmp.get('job_id')))
+        data['company_logo'] = JobModel.get_companylogo(id) 
+        data['company_name'] = JobModel.get_companyname(id)
+        data['company_video'] = JobModel.get_companyvideo(id)
+        data['appliedtalents_count'] = len(appliedjob_schema.dump(AppliedJobModel.get_by_jobid(tmp.get('job_id')), many=True))
+        shortlist = []
+        for ttmp in appliedjob_schema.dump(AppliedJobModel.get_by_jobid(tmp.get('job_id')), many=True):
+            if ttmp.get('shortlist_status'):
+                shortlist.append(ttmp.get('talent_id'))
+        data['shortlisttalents_count'] = len(shortlist)
+        res_data.append(data)
+    return custom_response(res_data, 200)
+
+@appliedjob_api.route('/shortlist_job_by_company/<int:id>/<int:page_num>/<int:page_length>', methods = ['GET'])
+@Auth.auth_required
+def get_by_shortlist_companyid_page(id, page_num, page_length):
+    try:
+        appliedjobs = AppliedJobModel.get_by_shortlist_companyid_page(id, page_num, page_length)
     except ValidationError as error:
         print(error.messages)
         custom_response(error,400)

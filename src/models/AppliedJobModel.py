@@ -64,12 +64,20 @@ class AppliedJobModel(db.Model):
     return AppliedJobModel.query.filter_by(talent_id=value).all()
   
   @staticmethod
+  def get_shortlist_job_by_talentid(value):
+    return AppliedJobModel.query.filter_by(talent_id=value, shortlist_status=True).all()
+  
+  @staticmethod
   def get_by_companyid(value):
     return AppliedJobModel.query.filter_by(company_id=value).all()
   
   @staticmethod
   def get_by_companyid_page(value, page_num, page_length):
     return db.session.query(AppliedJobModel.job_id).filter_by(company_id=value).group_by(AppliedJobModel.job_id).paginate(page=page_num, per_page=page_length, error_out=True)
+  
+  @staticmethod
+  def get_by_shortlist_companyid_page(value, page_num, page_length):
+    return db.session.query(AppliedJobModel.job_id).filter_by(company_id=value, shortlist_status=True).group_by(AppliedJobModel.job_id).paginate(page=page_num, per_page=page_length, error_out=True)
   
   @staticmethod
   def get_by_jobid_page(value, page_num, page_length):
@@ -82,6 +90,10 @@ class AppliedJobModel(db.Model):
   @staticmethod
   def get_jobcount_by_user(value):
     return AppliedJobModel.query.filter_by(talent_id=value).count()
+  
+  @staticmethod
+  def get_shortlist_jobcount_by_user(value):
+    return AppliedJobModel.query.filter_by(talent_id=value, shortlist_status=True).count()
   # @staticmethod
   # def get_user_by_email(value):
   #   return ProfileModel.query.filter_by(email=value).first()
