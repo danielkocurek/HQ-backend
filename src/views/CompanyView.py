@@ -79,7 +79,7 @@ def get_company_by_user(id):
   res_data['status'] = 'success'
   return custom_response(res_data, 200)
 
-@company_api.route('company_by_uid/<int:id>')
+@company_api.route('company_by_uid/<string:id>')
 @Auth.auth_required
 def get_company_by_uid(id):
   """

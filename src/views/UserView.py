@@ -210,6 +210,15 @@ def get_companies_count():
   res_data['count'] = companies_count
   res_data['status'] = 'success'
   return custom_response(res_data, 200)
+
+
+@user_api.route('/talents_count', methods=['GET'])
+def get_talents_count():
+  companies_count = UserModel.get_talents_count()
+  res_data = {}
+  res_data['count'] = companies_count
+  res_data['status'] = 'success'
+  return custom_response(res_data, 200)
  
 @user_api.route('/<int:user_id>', methods=['GET'])
 @Auth.auth_required

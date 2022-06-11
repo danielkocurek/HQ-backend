@@ -105,6 +105,10 @@ class UserModel(db.Model):
   @staticmethod
   def get_companies_count():
     return UserModel.query.filter_by(type='company').count()
+  
+  @staticmethod
+  def get_talents_count():
+    return UserModel.query.filter_by(type='talent').count()
 
   def __generate_hash(self, password):
     return bcrypt.generate_password_hash(password, rounds=10).decode("utf-8")
