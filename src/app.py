@@ -1,7 +1,8 @@
 #src/app.py
 
-from flask import Flask, redirect, render_template, url_for, request, json, Response, flash
+from flask import Flask
 import os
+from sqlalchemy import true
 from werkzeug.utils import secure_filename
 
 
@@ -16,6 +17,7 @@ from .views.JobView import job_api as job_blueprint
 from .views.VideoView import video_api as video_blueprint
 from .views.ProfileView import profile_api as profile_blueprint
 from .views.AppliedJobView import appliedjob_api as appliedjob_blueprint
+from flask_cors import CORS
 
 UPLOAD_FOLDER = 'static/uploads/'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'mp4'}
@@ -29,6 +31,7 @@ def create_app(env_name):
   
   # app initiliazation
   app = Flask(__name__)
+  CORS(app, supports_credentials=true, )
   app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
   app.secret_key = "secret key"
 
@@ -54,13 +57,21 @@ def create_app(env_name):
     return 'Congratulations! Your part 2 endpoint is working'
   
   
-  @app.after_request
-  def after_request(response):
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    response.headers.add('Access-Control-Allow-Credentials', True)
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,api-key')
-    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
-    return response
+  # @app.after_request
+  # def after_request(response):
+  #   response.headers.add('Access-Control-Allow-Origin', "*")
+  #   response.headers.add('Access-Control-Allow-Credentials', True)
+  #   response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,api-token,X-Requested-With, Accept, X-HTTP-Method-Override')
+  #   response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+  #   return response
 
+
+  # @app.before_request
+  # def before_request(response):
+  #   response.headers.add('Access-Control-Allow-Origin', '')
+  #   response.headers.add('Access-Control-Allow-Credentials', True)
+  #   response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,api-key,X-Requested-With')
+  #   response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+  #   return response
   return app
 
