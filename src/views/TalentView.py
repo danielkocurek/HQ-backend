@@ -106,6 +106,18 @@ def delete(id):
 
   talent.delete()
   return custom_response({'message': 'deleted', 'status':'success'}, 200)
+
+
+@talent_api.route('/talent_by_uid/<string:id>', methods=['GET'])
+@Auth.auth_required
+def get_talents_by_uid(id):
+  talent = TalentModel.get_talent_by_uid(id)
+  if not talent:
+    return custom_response({'error': 'talent not found'}, 400)
+  
+  res_data = talent_schema.dump(talent)
+  res_data['status'] = 'success'
+  return custom_response(res_data, 200)    
   
 
 

@@ -61,6 +61,9 @@ class CompanyModel(db.Model):
   def get_company_by_userid(value):
     return CompanyModel.query.filter_by(user_id=value).first()
 
+  @staticmethod
+  def get_company_by_uid(value):
+    return CompanyModel.query.filter_by(uuid=value).first()
   # def __generate_hash(self, password):
   #   return bcrypt.generate_password_hash(password, rounds=10).decode("utf-8")
   

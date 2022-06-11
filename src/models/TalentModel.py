@@ -74,6 +74,10 @@ class TalentModel(db.Model):
     @staticmethod
     def get_talent_by_userid(value):
         return TalentModel.query.filter_by(user_id=value).first()
+    
+    @staticmethod
+    def get_talent_by_uid(value):
+     return TalentModel.query.filter_by(uuid=value).first()
 
     def __generate_hash(self, password):
         return bcrypt.generate_password_hash(password, rounds=10).decode("utf-8")

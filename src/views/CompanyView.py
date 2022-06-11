@@ -79,6 +79,21 @@ def get_company_by_user(id):
   res_data['status'] = 'success'
   return custom_response(res_data, 200)
 
+@company_api.route('company_by_uid/<int:id>')
+@Auth.auth_required
+def get_company_by_uid(id):
+  """
+  Get a single company
+  """
+  company = CompanyModel.get_company_by_uid(id)
+  if not company:
+    return custom_response({'error': 'company not found'}, 400)
+  
+  res_data = company_schema.dump(company)
+  res_data['status'] = 'success'
+  return custom_response(res_data, 200)
+
+
 
 @company_api.route('/', methods=['GET'])
 @Auth.auth_required
