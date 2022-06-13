@@ -6,6 +6,7 @@ from ..shared.CustomService import custom_response
 from ..shared.Authentication import Auth
 from ..models.TalentModel import TalentModel, TalentSchema
 from ..models.ProfileModel import *
+from ..models.UserModel import *
 
 talent_api = Blueprint('talent_api', __name__)
 talent_schema = TalentSchema()
@@ -72,6 +73,7 @@ def get_all_talents(page_num, page_length):
     talent['talent_logo'] = dump_data.get('avator')
     talent['video_id'] = dump_data.get('video_id')
     talent['resume'] = dump_data.get('resume')
+    talent['talent_email'] = UserModel.get_one_user(user_id).email
     res_data.append(talent)
   return custom_response(res_data,200)
   

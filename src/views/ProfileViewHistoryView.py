@@ -1,6 +1,6 @@
 #/src/views/ProfileViewHistoryView.py
 from cProfile import Profile
-from flask import request, Blueprint
+from flask import request, Blueprint, g
 from marshmallow import ValidationError
 
 from src.models.CompanyModel import CompanyModel
@@ -42,4 +42,15 @@ def company_create():
     res_data = profileviewhistory_schema.dump(history)
     res_data['status'] = 'success'
     return custom_response(res_data, 200)
+
+@profileviewhistory_api.route('/', methods=['GET'])
+@Auth.auth_required
+def get_video_counts_by_userid():
+    user_id = g.user.get('id')
+    print(user_id)
+    count = ProfileViewHistoryModel.get_all_count(user_id) 
+    res_data = {}
+    res_data['count'] = count
+    res_data['status'] = 'success'
+    return custom_response(res_data, 200)   
     

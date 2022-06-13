@@ -44,9 +44,9 @@ class ProfileViewHistoryModel(db.Model):
     db.session.delete(self)
     db.session.commit()
 
-  # @staticmethod
-  # def get_all_users():
-  #   return ProfileModel.query.all()
+  @staticmethod
+  def get_all_count(value):
+    return ProfileViewHistoryModel.query.filter_by(which=value).count()
 
   # @staticmethod
   # def get_one_user(id):
