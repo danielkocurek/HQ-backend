@@ -16,9 +16,8 @@ class ProfileViewHistoryModel(db.Model):
 
   id = db.Column(db.Integer, primary_key=True)
   who = db.Column(db.Integer, nullable=False)
-  when = db.Column(db.DateTime, nullable=False)
   which = db.Column(db.Integer, nullable=False)
-  type = db.Column(db.String(128), nullable=False)
+  when = db.Column(db.DateTime)
 
   # class constructor
   def __init__(self, data):
@@ -26,9 +25,8 @@ class ProfileViewHistoryModel(db.Model):
     Class constructor
     """
     self.who = data.get('who')
-    self.when = data.get("when")
+    self.when = datetime.datetime.utcnow()
     self.which = data.get("which")
-    self.type = data.get('type')
 
   def save(self):
     db.session.add(self)
@@ -70,7 +68,6 @@ class ProfileViewHistoryModel(db.Model):
 class ProfileViewHistorySchema(Schema):
   id = fields.Int(dump_only=True)
   who = fields.Int(required=True)
-  when = fields.DateTime(required=True)
   which = fields.Int(required=True)
-  type = fields.Str(required=True)
+  when = fields.DateTime()
 

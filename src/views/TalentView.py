@@ -1,4 +1,4 @@
-#/src/views/BlogpostView.py
+#/src/views/TalentView.py
 from flask import request, g, Blueprint, json, Response
 from marshmallow import ValidationError
 
