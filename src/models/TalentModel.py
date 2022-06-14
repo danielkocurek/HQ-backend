@@ -62,6 +62,10 @@ class TalentModel(db.Model):
     @staticmethod
     def get_all_talent():
         return TalentModel.query.all()
+    
+    @staticmethod
+    def get_talents_count():
+        return TalentModel.query.count()
 
     @staticmethod
     def get_all_talent_page_num(page_num, page_length):

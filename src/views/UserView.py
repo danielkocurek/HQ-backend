@@ -214,7 +214,7 @@ def get_companies_count():
 
 @user_api.route('/talents_count', methods=['GET'])
 def get_talents_count():
-  companies_count = UserModel.get_talents_count()
+  companies_count = TalentModel.get_talents_count()
   res_data = {}
   res_data['count'] = companies_count
   res_data['status'] = 'success'
