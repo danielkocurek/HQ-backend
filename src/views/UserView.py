@@ -55,7 +55,7 @@ def create():
   print(ser_data.get('id'))
   # token = Auth.generate_token(ser_data.get('id'))
   # print(token)
-  sms_code_send(user_schema.dump(user_in_db).get('verify_code'),user_schema.dump(user_in_db).get('email') )
+  sms_code_send(ser_data.get('verify_code'),ser_data.get('email') )
   return custom_response({'status': 'success'}, 200)
 
 @user_api.route('/verify', methods=['POST'])
