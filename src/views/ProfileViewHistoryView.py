@@ -53,4 +53,28 @@ def get_video_counts_by_userid():
     res_data['count'] = count
     res_data['status'] = 'success'
     return custom_response(res_data, 200)   
+
+# @profileviewhistory_api.route('/list_by_company/<int:id>/<int:page_num>/<int:page_length>', methods = ['GET'])
+# @Auth.auth_required
+# def get_jobs_by_company(id, page_num, page_length):
+#     try:
+#         appliedjobs = ProfileViewHistoryModel.get_by_companyid_page(id, page_num, page_length)
+#     except ValidationError as error:
+#         print(error.messages)
+#         custom_response(error,400)
+#     data_jobs = appliedjob_schema.dump(appliedjobs.items, many=True)
+#     res_data = []
+#     for tmp in data_jobs:
+#         data = JobSchema().dump(JobModel.get_job_by_id(tmp.get('job_id')))
+#         data['company_logo'] = JobModel.get_companylogo(id) 
+#         data['company_name'] = JobModel.get_companyname(id)
+#         data['company_video'] = JobModel.get_companyvideo(id)
+#         data['appliedtalents_count'] = len(appliedjob_schema.dump(AppliedJobModel.get_by_jobid(tmp.get('job_id')), many=True))
+#         shortlist = []
+#         for ttmp in appliedjob_schema.dump(AppliedJobModel.get_by_jobid(tmp.get('job_id')), many=True):
+#             if ttmp.get('shortlist_status'):
+#                 shortlist.append(ttmp.get('talent_id'))
+#         data['shortlisttalents_count'] = len(shortlist)
+#         res_data.append(data)
+#     return custom_response(res_data, 200)
     

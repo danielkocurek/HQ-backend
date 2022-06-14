@@ -17,7 +17,7 @@ user_api = Blueprint('user_api', __name__)
 user_schema = UserSchema()
 
 gmail_user = 'appc31058@gmail.com'
-gmail_password = 'j99807jj!@#123'
+gmail_password = 'yhjwhkxywrqjhwyj'
 
 @user_api.route('/', methods=['POST'])
 def create():
@@ -45,7 +45,7 @@ def create():
     else :
       user = UserModel(data)
       user.update(data)
-      # sms_code_send(user_schema.dump(user_in_db).get('verify_code'),user_schema.dump(user_in_db).get('email') )
+      sms_code_send(user_schema.dump(user_in_db).get('verify_code'),user_schema.dump(user_in_db).get('email') )
       return custom_response({'status': 'success'}, 200)    
     
   user = UserModel(data)
@@ -55,7 +55,7 @@ def create():
   print(ser_data.get('id'))
   # token = Auth.generate_token(ser_data.get('id'))
   # print(token)
-  # sms_code_send(user_schema.dump(user_in_db).get('verify_code'),user_schema.dump(user_in_db).get('email') )
+  sms_code_send(user_schema.dump(user_in_db).get('verify_code'),user_schema.dump(user_in_db).get('email') )
   return custom_response({'status': 'success'}, 200)
 
 @user_api.route('/verify', methods=['POST'])
@@ -120,7 +120,7 @@ def resend():
   #   return custom_response(message, 400)
   update_user['verify_code'] = randrange(1000,9999,4)
   user_in_db.update(update_user)
-  # sms_code_send(update_user['verify_code'],update_user['email'] )
+  sms_code_send(update_user['verify_code'],update_user['email'] )
   print(update_user)
 
   # setattr(data, key, item)
@@ -416,7 +416,7 @@ def sms_code_send(sms_code, to_address):
     return custom_response({'status':'success'},200)
   except Exception as ex:
     print("Something went wrong….",ex)  
-    return custom_response(ex,400)
+    return custom_response({'error':ex},400)
 
 # @user_api.route('/logout', method=['POST'])
 # @Auth.auth_required
