@@ -66,12 +66,14 @@ def get_list(page_num, page_length):
         print(error.messages)
         custom_response(error,400)
     data_list = profileviewhistory_schema.dump(userlist.items, many=True)
+    print(data_list)
     res_data = []
     for tmp in data_list:
         if (UserModel.get_one_user(tmp.get('who')).type == 'talent'):
             try:
-                data = TalentSchema().dump(TalentModel.get_talent_by_id(tmp.get('who')))
+                data = TalentSchema().dump(TalentModel.get_talent_by_userid(tmp.get('who')))
                 data['type'] = 'talent'
+                data['view_count'] = ProfileViewHistoryModel.get_count_per_user(tmp.get('who'), user_id)
             except ValidationError as error:
                 print(error.messages)
             try:
@@ -86,6 +88,7 @@ def get_list(page_num, page_length):
             try:
                 data = CompanySchema().dump(CompanyModel.get_company_by_userid(tmp.get('who')))
                 data['type'] = 'company'
+                data['view_count'] = ProfileViewHistoryModel.get_count_per_user(tmp.get('who'), user_id)
             except ValidationError as error:
                 print(error.messages)
             try:
