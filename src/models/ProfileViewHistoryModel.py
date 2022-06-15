@@ -48,6 +48,9 @@ class ProfileViewHistoryModel(db.Model):
   def get_all_count(value):
     return ProfileViewHistoryModel.query.filter_by(which=value).count()
 
+  @staticmethod
+  def get_list_page(value, page_num, page_length):
+    return db.session.query(ProfileViewHistoryModel.who).filter_by(which=value).group_by(ProfileViewHistoryModel.who).paginate(page=page_num, per_page=page_length, error_out=True)
   # @staticmethod
   # def get_one_user(id):
   #   return ProfileModel.query.get(id)

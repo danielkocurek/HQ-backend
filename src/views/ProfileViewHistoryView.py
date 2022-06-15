@@ -3,11 +3,13 @@ from cProfile import Profile
 from flask import request, Blueprint, g
 from marshmallow import ValidationError
 
-from src.models.CompanyModel import CompanyModel
-
 from ..shared.CustomService import custom_response
 from ..shared.Authentication import Auth
 from ..models.ProfileViewHistoryModel import *
+from ..models.UserModel import *
+from ..models.TalentModel import *
+from ..models.ProfileModel import *
+from ..models.CompanyModel import *
 
 profileviewhistory_api = Blueprint('profileviewhistory_api', __name__)
 profileviewhistory_schema = ProfileViewHistorySchema()
@@ -54,27 +56,45 @@ def get_video_counts_by_userid():
     res_data['status'] = 'success'
     return custom_response(res_data, 200)   
 
-# @profileviewhistory_api.route('/list_by_company/<int:id>/<int:page_num>/<int:page_length>', methods = ['GET'])
-# @Auth.auth_required
-# def get_jobs_by_company(id, page_num, page_length):
-#     try:
-#         appliedjobs = ProfileViewHistoryModel.get_by_companyid_page(id, page_num, page_length)
-#     except ValidationError as error:
-#         print(error.messages)
-#         custom_response(error,400)
-#     data_jobs = appliedjob_schema.dump(appliedjobs.items, many=True)
-#     res_data = []
-#     for tmp in data_jobs:
-#         data = JobSchema().dump(JobModel.get_job_by_id(tmp.get('job_id')))
-#         data['company_logo'] = JobModel.get_companylogo(id) 
-#         data['company_name'] = JobModel.get_companyname(id)
-#         data['company_video'] = JobModel.get_companyvideo(id)
-#         data['appliedtalents_count'] = len(appliedjob_schema.dump(AppliedJobModel.get_by_jobid(tmp.get('job_id')), many=True))
-#         shortlist = []
-#         for ttmp in appliedjob_schema.dump(AppliedJobModel.get_by_jobid(tmp.get('job_id')), many=True):
-#             if ttmp.get('shortlist_status'):
-#                 shortlist.append(ttmp.get('talent_id'))
-#         data['shortlisttalents_count'] = len(shortlist)
-#         res_data.append(data)
-#     return custom_response(res_data, 200)
+@profileviewhistory_api.route('/video_views_list/<int:page_num>/<int:page_length>', methods = ['GET'])
+@Auth.auth_required
+def get_list(page_num, page_length):
+    user_id = g.user.get('id')
+    try:
+        userlist = ProfileViewHistoryModel.get_list_page(user_id, page_num, page_length)
+    except ValidationError as error:
+        print(error.messages)
+        custom_response(error,400)
+    data_list = profileviewhistory_schema.dump(userlist.items, many=True)
+    res_data = []
+    for tmp in data_list:
+        if (UserModel.get_one_user(tmp.get('who')).type == 'talent'):
+            try:
+                data = TalentSchema().dump(TalentModel.get_talent_by_id(tmp.get('who')))
+                data['type'] = 'talent'
+            except ValidationError as error:
+                print(error.messages)
+            try:
+                talent_profile = ProfileSchema().dump(ProfileModel.get_profile_by_userid(tmp.get('who')))
+                data['talent_logo'] = talent_profile.get('avator')
+                data['video_id'] = talent_profile.get('video_id')
+                data['resume'] = talent_profile.get('resume')
+            except ValidationError as error:
+                print(error.messages)
+            res_data.append(data)
+        if (UserModel.get_one_user(tmp.get('who')).type == 'company'):
+            try:
+                data = CompanySchema().dump(CompanyModel.get_company_by_userid(tmp.get('who')))
+                data['type'] = 'company'
+            except ValidationError as error:
+                print(error.messages)
+            try:
+                talent_profile = ProfileSchema().dump(ProfileModel.get_profile_by_userid(tmp.get('who')))
+                data['company_logo'] = talent_profile.get('avator')
+                data['video'] = talent_profile.get('video')
+                data['resume'] = talent_profile.get('resume')
+            except ValidationError as error:
+                print(error.messages)
+            res_data.append(data)
+    return custom_response(res_data, 200)
     
