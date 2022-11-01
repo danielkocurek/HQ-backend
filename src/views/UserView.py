@@ -17,7 +17,7 @@ user_api = Blueprint('user_api', __name__)
 user_schema = UserSchema()
 
 gmail_user = 'appc31058@gmail.com'
-gmail_password = 'yhjwhkxywrqjhwyj'
+gmail_password = ''
 
 @user_api.route('/', methods=['POST'])
 def create():
